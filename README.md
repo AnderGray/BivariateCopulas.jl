@@ -4,8 +4,8 @@ An implementation of bivariate copulas and bivariate distributions in Julia.
 
 This module has the following capabilities:
 * Construction of continous joint distribution with Distributions.jl
-* Evaluations of cdf and density
-* Conditioning
+* Evaluation of cdf and density
+* Conditioning (cdfs)
 * Sampling
 * Bivariate scatter plots, cdf and density plots and contour plots
 * Common copula families:
