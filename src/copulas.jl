@@ -40,7 +40,7 @@ using Interpolations            #   https://github.com/JuliaMath/Interpolations.
 using3D()
 
 global  n  = 200;                       # Number of descretizations
-global  pn = 200;                       # Number of descretization for plotting
+global  pn = 50;                       # Number of descretization for plotting
 global bOt = 0.0001;                    # smallest quantile to use if left tail is unbounded. Should we use these to define the copula ranges?
 global tOp = 0.9999;                    # largest quantile to use if right tail is unbounded
 #global bOt = 0;
@@ -248,7 +248,7 @@ end
 
 function π()
     x = y = range(0,stop=1,length = n);
-    return copula(indep(x,y), func = indep);
+    return copula(indep(x,y),density= ones(n,n), func = indep);
 end
 Pi() = π()
 

@@ -44,8 +44,37 @@ end
 plotDensity(x :: AbstractCopula) = plot1(x.density);
 plotCdf(x::AbstractCopula) = plot1(x.cdf);
 
-plotCdf(j::AbstractJoint) = plot3(j.cdf, j.xRange,j.yRange)
-plotDensity(j::AbstractJoint) = plot3(j.density, j.xRange,j.yRange)
+function plotCdf(j::AbstractJoint; pn = 50) 
+
+    A = j.cdf
+    m = size(A)[1];
+    if m < pn; ppn = m; else ppn = pn; end
+
+    nm = round(m/ppn);
+    A = A[1:Int(nm):end,1:Int(nm):end]
+    plot3(A, j.xRange[1:Int(nm):end],j.yRange[1:Int(nm):end])
+
+end
+
+function plotDensity(j::AbstractJoint) 
+
+    A = j.density
+    m = size(A)[1];
+    if m < pn; ppn = m; else ppn = pn; end
+
+    nm = round(m/ppn);
+    A = A[1:Int(nm):end,1:Int(nm):end]
+    plot3(A, j.xRange[1:Int(nm):end],j.yRange[1:Int(nm):end])
+
+end
+
+plot(j::AbstractJoint) = plot4(j)
+plotDen(j::AbstractJoint) = plot4(j,false)
+
+plotContourCdf(j::AbstractJoint) = plot5(j)
+plotContourDen(j::AbstractJoint) = plot5(j,false)
+
+
 
 
 function plot(x :: AbstractCopula;title = "SurfacePlots", pn = 50, fontsize=18)
@@ -76,7 +105,7 @@ function plot(x :: AbstractCopula;title = "SurfacePlots", pn = 50, fontsize=18)
 
 end
 
-function plotDen(x;title = "SurfacePlots", pn = 200, fontsize=18)
+function plotDen(x :: AbstractCopula; title = "SurfacePlots", pn = 50, fontsize=18)
     A = x.density
     m = size(A)[1];
     if m < pn; ppn = m; else ppn = pn; end
@@ -124,7 +153,7 @@ function plotContourDen(x; title = "SurfacePlots", pn = 200, fontsize=18)
 
 end
 
-function plotContourCdf(x; title = "SurfacePlots",fontsize=18)
+function plotContourCdf(x :: AbstractCopula; title = "SurfacePlots",fontsize=18)
     A = x.cdf
     m = size(A)[1];
     if m < pn; ppn = m; else ppn = pn; end
@@ -165,6 +194,7 @@ function plot1(A :: Array{<:Real,2})
     plot_surface(xgrid, ygrid, z, rstride=2,edgecolors="k", cstride=2, alpha=0.8, linewidth=0.25,cmap=ColorMap("coolwarm"))
     xlabel("X")
     ylabel("Y")
+    ax.set_zlim3d(0, max(maximum(A),1)) 
     PyPlot.title("Surface Plot")
 
     subplot(212)
@@ -173,6 +203,7 @@ function plot1(A :: Array{<:Real,2})
     ax.clabel(cp, inline=1, fontsize=10)
     xlabel("X")
     ylabel("Y")
+    #ax.set_zlim3d(0, max(maximum(A),1))
     PyPlot.title("Contour Plot")
     tight_layout()
 
@@ -264,9 +295,20 @@ function plot4(J :: AbstractJoint, CDF = true)    # Won't work if n!=200
 
     x = J.xRange;       y = J.yRange;
     M1 = J.marginal1;   M2 = J.marginal2;
+
+    if CDF; z = J.cdf; title = "cdf" else z = J.density; title = "pdf";end
+
+    m = size(A)[1];
+    if m < pn; ppn = m; else ppn = pn; end
+
+    nm = round(m/ppn);
+    z = z[1:Int(nm):end,1:Int(nm):end]
+
+    x = x[1:Int(nm):end]
+    y = y[1:Int(nm):end]
+
     xgrid = repeat(x',pn,1)
     ygrid = repeat(y,1,pn)
-    if CDF; z = J.cdf; title = "cdf" else z = J.density; title = "pdf";end
 
 
     fig1 = figure("SurfacePlots",figsize=(10,10))
@@ -277,23 +319,48 @@ function plot4(J :: AbstractJoint, CDF = true)    # Won't work if n!=200
 
     PyPlot.title("$title surface plot")
 
-    fig = plt.figure("ContourPlots", figsize=(10, 10))
-    grid = plt.GridSpec(4, 4, hspace=0.2, wspace=0.2)
-    main_ax = fig.add_subplot(get(grid, (slice(1,4),slice(0,3))))
-    yMarg  = fig.add_subplot(get(grid, (slice(1,4),3)), xticklabels=[], sharey=main_ax)
-    xMarg  = fig.add_subplot(get(grid, (0,slice(0,3))), yticklabels=[], sharex=main_ax)
-
-    cp = main_ax.contour(xgrid, ygrid, z, cmap=ColorMap("coolwarm"), levels =15)
-    main_ax.clabel(cp, inline=1, fontsize=10)
-    #xlabel("X")
-    #ylabel("Y")
-    if (CDF) xMarg.plot(x,cdf.(M1,x));else xMarg.plot(x,pdf.(M1,x));end
-    if (CDF) yMarg.plot(cdf.(M2,y),y);else yMarg.plot(pdf.(M2,y),y);end
-
-    PyPlot.title("joint $title and marginals")
     tight_layout()
 
 end
+
+function plot5(J :: AbstractJoint, CDF = true)    # Won't work if n!=200
+
+    #   https://github.com/gizmaa/Julia_Examples/blob/master/pyplot_surfaceplot.jl
+    
+        x = J.xRange;       y = J.yRange;
+        M1 = J.marginal1;   M2 = J.marginal2;
+    
+        if CDF; z = J.cdf; title = "cdf" else z = J.density; title = "pdf";end
+    
+        m = size(A)[1];
+        if m < pn; ppn = m; else ppn = pn; end
+    
+        nm = round(m/ppn);
+        z = z[1:Int(nm):end,1:Int(nm):end]
+    
+        x = x[1:Int(nm):end]
+        y = y[1:Int(nm):end]
+    
+        xgrid = repeat(x',pn,1)
+        ygrid = repeat(y,1,pn)
+    
+        fig = plt.figure("ContourPlots", figsize=(10, 10))
+        grid = plt.GridSpec(4, 4, hspace=0.2, wspace=0.2)
+        main_ax = fig.add_subplot(get(grid, (slice(1,4),slice(0,3))))
+        yMarg  = fig.add_subplot(get(grid, (slice(1,4),3)), xticklabels=[], sharey=main_ax)
+        xMarg  = fig.add_subplot(get(grid, (0,slice(0,3))), yticklabels=[], sharex=main_ax)
+    
+        cp = main_ax.contour(xgrid, ygrid, z, cmap=ColorMap("coolwarm"), levels =15)
+        main_ax.clabel(cp, inline=1, fontsize=10)
+        #xlabel("X")
+        #ylabel("Y")
+        if (CDF) xMarg.plot(x,cdf.(M1,x));else xMarg.plot(x,pdf.(M1,x));end
+        if (CDF) yMarg.plot(cdf.(M2,y),y);else yMarg.plot(pdf.(M2,y),y);end
+    
+        PyPlot.title("joint $title and marginals")
+        tight_layout()
+    
+    end
 
 
 
