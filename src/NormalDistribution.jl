@@ -1,7 +1,7 @@
 ######
 # This file is part of the BivariateCopulas.jl package.
 #
-#   Bivarte gaussian cdf function, by Gauss-Legendre quadrature
+#   Bivariate gaussian cdf function, by Gauss-Legendre quadrature
 #
 #           University of Liverpool, Institute for Risk and Uncertainty
 #

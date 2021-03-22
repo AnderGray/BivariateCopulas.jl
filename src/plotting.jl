@@ -12,7 +12,7 @@
 
 wait_for_key() = (print(stdout, "press enter to continue"); read(stdin, 1); nothing);
 
-function samplePlot(C :: AbstractCopula, N = 1)     # Generates a plot which to conditional sampling
+function samplePlot(C :: AbstractCopula, N = 1)     # Generates a plot showing conditional sampling
 
     x = rand(N);    y = rand(N);
     ux = x;         uy = zeros(N);
@@ -133,7 +133,7 @@ function plotDen(x :: AbstractCopula; title = "SurfacePlots", pn = 50, fontsize=
 
 end
 
-function plotContourDen(x; title = "SurfacePlots", pn = 200, fontsize=18)
+function plotContourDen(x; title = "SurfacePlots", pn = pn, fontsize=18)
     A = x.density
     m = size(A)[1];
     if m < pn; ppn = m; else ppn = pn; end
@@ -298,7 +298,7 @@ function plot4(J :: AbstractJoint, CDF = true)    # Won't work if n!=200
 
     if CDF; z = J.cdf; title = "cdf" else z = J.density; title = "pdf";end
 
-    m = size(A)[1];
+    m = size(z)[1];
     if m < pn; ppn = m; else ppn = pn; end
 
     nm = round(m/ppn);
@@ -332,7 +332,7 @@ function plot5(J :: AbstractJoint, CDF = true)    # Won't work if n!=200
     
         if CDF; z = J.cdf; title = "cdf" else z = J.density; title = "pdf";end
     
-        m = size(A)[1];
+        m = size(z)[1];
         if m < pn; ppn = m; else ppn = pn; end
     
         nm = round(m/ppn);
@@ -377,7 +377,7 @@ end
 
 slice(x,y) = pycall(pybuiltin("slice"), PyObject, x, y)         # For performing python array slicing for
 
-function scatter(a :: Array{Float64,2}; title = "samples",fontsize = 12, fontsizeT = 12, xlab = "Z", ylab = "X", nbins = 50)
+function scatter(a :: Array{Float64,2}; title = "samples",fontsize = 12, fontsizeT = 12, xlab = "U", ylab = "V", nbins = 50)
 
     x = a[:,1];
     y = a[:,2];
