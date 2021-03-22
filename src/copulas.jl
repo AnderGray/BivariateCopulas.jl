@@ -32,29 +32,6 @@
 ###
 
 
-using Distributions             #   https://github.com/JuliaStats/Distributions.jl
-using PyPlot                    #   https://github.com/JuliaPy/PyPlot.jl
-using PyCall                    #   https://github.com/JuliaPy/PyCall.jl
-using LinearAlgebra             #   Main Library
-using Interpolations            #   https://github.com/JuliaMath/Interpolations.jl
-using3D()
-
-global  n  = 200;                       # Number of descretizations
-global  pn = 50;                       # Number of descretization for plotting
-global bOt = 0.0001;                    # smallest quantile to use if left tail is unbounded. Should we use these to define the copula ranges?
-global tOp = 0.9999;                    # largest quantile to use if right tail is unbounded
-#global bOt = 0;
-#global tOp = 1;
-
-abstract type AbstractCopula <: Real end
-abstract type AbstractJoint <: Real end
-abstract type AbstractMarginal <: ContinuousUnivariateDistribution end
-
-include("NormalDistribution.jl")
-include("plotting.jl")
-
-
-import Distributions: cdf, quantile
 
 #import PyPlot: PyPlot.plot
 
@@ -97,6 +74,8 @@ function (obj::copula)(X,Y, useInterp = false)             # Evaluating the copu
     return sCdf(X,Y);
 end
 
+cdf(C:: copula, X, Y) = C(X,Y)
+
 function density(C :: copula, X, Y)
 
     den = interpolate(C.density, BSpline(Quadratic(Line(OnCell()))))
@@ -109,7 +88,7 @@ function (obj::copula)(X :: ContinuousUnivariateDistribution,Y :: ContinuousUniv
     return Joint(X, Y,obj)
 end
 
-function sample(C :: AbstractCopula, N = 1; plot = false)
+function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false)
 
     useInterp = false;      # Set true to use interpolator
     if ismissing(C.func) func = 0; useInterp = true else func = C.func end
@@ -151,6 +130,8 @@ function sample(C :: AbstractCopula, N = 1; plot = false)
     end
     return hcat(ux,uy);
 end
+
+rand(C :: AbstractCopula, N :: Int64 = 1; plot= false) = sample(C, N, plot=plot)
 
 function CholeskyGaussian(N = 1, correlation = 0)
 
@@ -246,11 +227,10 @@ function W()
     return copula(opp(x,y), density = den , func = opp);
 end
 
-function π()
+function Pi()
     x = y = range(0,stop=1,length = n);
     return copula(indep(x,y),density= ones(n,n), func = indep);
 end
-Pi() = π()
 
 function Frank(s = 1)                                     #   Frank copula
     x = y = range(0,stop = 1,length = n);                          #   s>0; 0 for perfect, 1 for indep, inf for oposite
@@ -341,6 +321,7 @@ function (obj :: Joint)(X,Y)    # Evaluating the joint cdf
     # Should use new scaling from interpolatorrs
 end
 
+cdf(J::Joint, X, Y) = J(X, Y)
 
 function conditional(J :: Joint, xVal :: Real; plot = false)   # May also work for joint? xVal will be take from invCdf(M1, u1)
 
@@ -371,7 +352,7 @@ function density2(J :: Joint,X = J.xRange, Y = J.yRange)        # An alternative
 
 end
 
-function sample(J :: AbstractJoint, N =1)
+function sample(J :: AbstractJoint, N :: Int64 =1)
 
     copulaSamples = sample(J.copula,N)
 
@@ -381,13 +362,15 @@ function sample(J :: AbstractJoint, N =1)
 
 end
 
+rand(J :: AbstractJoint, N :: Int64 = 1) = sample(J :: AbstractJoint, N)
+
 function invCdf(X :: Sampleable{Univariate}, u)
     return quantile.(X,u)                           # We will also need the interpolartor here
 end
 
-function calcDensity(J :: AbstractJoint)        # Legacy script. All it does not is return calcDensity(j.cdf,xRange,yRange);
+function calcDensity(J :: AbstractJoint)        
 
-    #return calcDensity(J.cdf,J.xRange,J.yRange)
+    return calcDensity(J.cdf,J.xRange,J.yRange)
 
     if ismissing(J.copula.func) return calcDensity(J.cdf,J.xRange,J.yRange) end
 
@@ -409,7 +392,7 @@ end
 
 M(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = M()(M1,M2)
 W(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = W()(M1,M2)
-π(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = π()(M1,M2)
+Pi(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = Pi()(M1,M2)
 Frank(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, s = 1) = Frank(s)(M1,M2)
 Clayton(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, t = 0) = Clayton(t)(M1,M2)
 Gaussian(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, corr = 0) = Gaussian(corr)(M1,M2)
@@ -443,54 +426,20 @@ end
 
 function cdf(D :: AbstractMarginal, x :: Real)
 
-    #=
-    inpl = interpolate(D.cdf, BSpline(Quadratic(Line(OnCell()))))
-
-    if length(x) == 1 return inpl(x)[1];end
-    a = D.range[1]; b = D.range[end];
-    L = length(D.range);
-
-    NOnes  = sum( x .> b);
-    NZeros = sum( x .< a);
-    if length(x) == 1; x1 = x
-    else x1 = x[NZeros+1:end-NOnes]; end
-
-    Ones = ones(NOnes);
-    Zeros = zeros(NZeros);
-
-    scale01 = (x1 .- a) ./(b - a);       # Uniform transformation to [0,1]
-    scaleN = scale01 .* (L - 1) .+ 1;    # Uniform transformation to [1, L]
-
-    vals = inpl(scaleN);
-    =#
-
     if x < D.range[1] return 0; end
     if x > D.range[end] return 1; end
 
     return D.cdfInp(x)
 
 end
-#cdf(D :: AbstractMarginal, x :: Real) = cdf(D, [x])
+
 
 function invCdf(D :: AbstractMarginal, u :: Real)
-
-    #=
-    inpl = LinearInterpolation(D.cdf, D.range, extrapolation_bc = Line())
-    if length(u) == 1 return inpl(u)[1];end
-    return inpl(u);
-    =#
 
     return D.invCdfInp(u)
 
 end
 
-#invCdf(D :: AbstractMarginal, u :: Real) = invCdf(D , [u])
-#=
-function pdf(D :: AbstractMarginal, x :: Real)
-    throw(ArgumentError("Not implemented yet. Could differente the interpolator"))
-end
-=#
-#pdf(D :: AbstractMarginal, x :: Real) = pdf(D, [x])
 
 
 quantile(D :: marginal, u) = invCdf(D, u);
@@ -498,6 +447,8 @@ quantile(D :: marginal, u) = invCdf(D, u);
 function sample(D :: marginal, N = 1)
     return invCdf(D, rand(N))
 end
+
+rand(D::marginal, N=1) = sample(D, N)
 
 
 function Base.show(io::IO, z::copula)
@@ -567,64 +518,3 @@ function linInterp(A, x)
     return y0 + (x-x0) * (y1-y0)/(x1-x0)
 end
 
-
-
-
-
-#=
-function calcDensity(J :: AbstractJoint)        # Legacy script. All it does not is return calcDensity(j.cdf,xRange,yRange);
-
-    #return calcDensity(J.cdf,J.xRange,J.yRange);
-
-    if (typeof(C) <: AbstractJoint)
-        func = C.copula.func;
-        xRange = C.xRange; yRange = C.yRange;
-    else
-        func = C.func;
-        xRange = yRange = range(0,1,length = n);
-    end
-
-    if ismissing(func) return calcDensity(C.cdf, xRange, yRange); end
-    density = zeros(n,n);
-    e = sqrt(sqrt(eps()));
-    x = range(2*e + Float64(xRange.ref), Float64(xRange.offset) - 3e    ,length = xRange.len);
-    y = range(2*e + Float64(yRange.ref), Float64(yRange.offset) - 3e    ,length = yRange.len);
-    for i = 1:n
-        for j = 1:n
-            der1 = ( C(x[i] + e, y[j])      - C(x[i], y[j])     )/e     # df/dx
-            der2 = ( C(x[i] + e, y[j] + e ) - C(x[i], y[j] + e) )/e     # d(df/dx)/dy
-            density[i,j] = (der2-der1)/e
-        end
-    end
-    return density
-
-end
-=#
-#=
-function bilinearInterp(A :: Array{<:Real,2}, x:: Array{<:Real,1})
-
-    if (length(x) != ndims(A)) throw(ArgumentError("Dimension of function and point must both be 2")); end
-    if (length(x) != 2)        throw(ArgumentError("Dimension point must both be 2")); end
-    if (ndims(A) != 2)        throw(ArgumentError("Dimension function must both be 2")); end
-
-end
-
-=#
-
-#=
-function linInterp(A :: Array{<:Real,1}, x :: Real)
-
-    #uy[i] = findlast(conditional .<= y[i]) / m;
-
-    Ind = findlast(A .< x);
-    numel = length(A);
-    x0 = A[Ind];    x1 = A[Ind+1];
-    y0 = Ind/numel; y1 = (Ind+1)/numel;
-
-    #return (y0 * (x1-x) + y1 * (x - x0))/(x1-x0)
-    return y0 * ((x1-x)/(x1-x0)) + y1 * ((x-x0)/(x1-x0))
-    #sepX = 1/length(A);   # Uniform Grid and A[1] == 0 assumed
-
-end
-
-=#
