@@ -71,7 +71,7 @@ Copula ~ Cla(t=-0.2)
 
 ### Sklar's theorem
 
-Use any continous distribution from Distributions.jl to make a bivariate distribution with C
+Use any two continous distribution from Distributions.jl may be used to make a bivariate distribution with C
 
 ```Julia
 julia> C1 = Gaussian(0.8);
