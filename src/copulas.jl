@@ -79,7 +79,7 @@ cdf(C:: copula, X, Y) = C(X,Y)
 function density(C :: copula, X, Y)
 
     den = interpolate(C.density, BSpline(Quadratic(Line(OnCell()))))
-    uu = range(0,1,length = m)
+    uu = range(0,1,length = n)
     sDen = Interpolations.scale(den, uu, uu);
     return sDen(X, Y);
 end
@@ -337,7 +337,7 @@ function conditional(J :: Joint, xVal :: Real; plot = false)   # May also work f
     
 end
 
-function density(J :: Joint, X = J.xRange, Y = J.yRange)
+function density2(J :: Joint, X = J.xRange, Y = J.yRange)
 
     den = interpolate(J.density, BSpline(Quadratic(Line(OnCell()))))
     sDen = Interpolations.scale(den, X, Y);
@@ -345,7 +345,7 @@ function density(J :: Joint, X = J.xRange, Y = J.yRange)
 
 end
 
-function density2(J :: Joint,X = J.xRange, Y = J.yRange)        # An alternative way to construct the Joint. fxy / fx*fy = c[Fx,Fy]. Where c is the copula Density
+function density(J :: Joint,X = J.xRange, Y = J.yRange)        # An alternative way to construct the Joint. fxy / fx*fy = c[Fx,Fy]. Where c is the copula Density
                                                                 # More error found against Multivariate gaussian pdf. Due to interpolation error in the copula density.
     denCop = density(J.copula, cdf.(J.marginal1,X), cdf.(J.marginal2,Y))
     return denCop .* [pdf(J.marginal1, x) * pdf(J.marginal2, y) for x in X, y in Y]
@@ -370,7 +370,7 @@ end
 
 function calcDensity(J :: AbstractJoint)        
 
-    return calcDensity(J.cdf,J.xRange,J.yRange)
+    #return calcDensity(J.cdf, J.xRange, J.yRange)
 
     if ismissing(J.copula.func) return calcDensity(J.cdf,J.xRange,J.yRange) end
 
