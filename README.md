@@ -243,4 +243,4 @@ Bibliography
 * *Nelsen, Roger B. An introduction to copulas. Springer Science & Business Media, 2007*
 
 * *Joe, Harry. Multivariate models and multivariate dependence concepts. CRC Press, 1997*
-* 
+
