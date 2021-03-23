@@ -194,6 +194,7 @@ julia> scatter(samps2)
 
 #### CDF plots
 ``` Julia
+julia> using3D()
 julia> plot(cop)
 ``` 
 <img src="https://imgur.com/2MioWzX.png" data-canonical-src="https://imgur.com/2MioWzX.png" width="700" />
