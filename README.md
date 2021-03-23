@@ -16,6 +16,8 @@ This module has the following capabilities:
   * Frank (s is real; -inf for W, 0 for π, inf for M)
   * Clayton (t>=-1; -1 for W, 0 for π and inf for M)
 
+Any possible multivariate dependence can be encoded in a [copula](https://en.wikipedia.org/wiki/Copula_(probability_theory)). Copulas, sometimes called dependency functions, are a joint cdf with standard uniform marginals, and are a way to model dependency independently of marginal distributions. Most probabilistic dependence problems can be reduced to copulas.
+
 ## Installation
 
 This is not yet a registered julia package. However this package may be installed using the Julia package manager:
@@ -37,7 +39,7 @@ Three important 2-copulas are:
 
 with W and M being bounds on all 2-copulas: W ≤ C ≤ M
 
-Copulas are mainly used in dependence modelling, and can be used to construct any continous multivariate distribution function (df) given their univariate marginals. Most probabilistic dependence problems can be reduced to copulas. This is enabled by a theorem from Sklar:
+Copulas are mainly used in dependence modelling, and can be used to construct any continous multivariate distribution function (df) given their univariate marginals. This is enabled by a theorem from Sklar:
 
 
 <img src="https://imgur.com/5D1QOif.png" data-canonical-src="https://imgur.com/5D1QOif.png" width="700" />
