@@ -16,7 +16,7 @@ This module has the following capabilities:
   * Frank (s is real; -inf for W, 0 for π, inf for M)
   * Clayton (t>=-1; -1 for W, 0 for π and inf for M)
 
-Any possible multivariate dependence can be encoded in a [copula](https://en.wikipedia.org/wiki/Copula_(probability_theory)). Copulas, sometimes called dependency functions, are a joint cdf with standard uniform marginals, and are a way to model dependency independently of marginal distributions. Most probabilistic dependence problems can be reduced to copulas.
+Any possible multivariate dependence can be encoded in a [copula](https://en.wikipedia.org/wiki/Copula_(probability_theory)). Copulas are joint cdfs with standard uniform marginals, and are a way to model dependency independently of marginal distributions. Most probabilistic dependence problems can be reduced to an analysis of copulas.
 
 ### Authors
 
