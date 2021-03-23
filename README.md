@@ -43,5 +43,8 @@ Copulas are mainly used in dependence modelling, and can be used to construct an
 <img src="https://imgur.com/5D1QOif.png" data-canonical-src="https://imgur.com/5D1QOif.png" width="700" />
 
 
-Moreover, X and Y are stochastically independent if and only if C<sub>XY</sub> = π, maximally correlated iff C<sub>XY</sub> = M, and minimally correlated iff C<sub>XY</sub> = W.
+Where F<sub>X</sub> and F<sub>Y</sub> are the cumulative distribution functions (cdf) of X and Y. Moreover, X and Y are stochastically independent if and only if C<sub>XY</sub> = π, maximally correlated iff C<sub>XY</sub> = M, and minimally correlated iff C<sub>XY</sub> = W.
 
+## Usage
+
+## Plots
