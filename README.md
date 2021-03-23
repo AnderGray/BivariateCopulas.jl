@@ -18,6 +18,11 @@ This module has the following capabilities:
 
 Any possible multivariate dependence can be encoded in a [copula](https://en.wikipedia.org/wiki/Copula_(probability_theory)). Copulas, sometimes called dependency functions, are a joint cdf with standard uniform marginals, and are a way to model dependency independently of marginal distributions. Most probabilistic dependence problems can be reduced to copulas.
 
+### Authors
+
+- [Ander Gray](https://www.researchgate.net/profile/Ander_Gray), Institute for Risk and Uncertainty, University of Liverpool
+- Liam Henry
+
 ## Installation
 
 This is not yet a registered julia package. However this package may be installed using the Julia package manager:
