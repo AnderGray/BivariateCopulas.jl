@@ -31,7 +31,16 @@ A bivariate copula (2-copula) C is a function C:[0,1]<sup>2</sup> -> [0,1] with 
 
 <img src="https://imgur.com/8mDL4fr.png" data-canonical-src="https://imgur.com/8mDL4fr.png" width="500" />
 
-Copulas are mainly used in dependence modelling, and can be used to construct any continous multivariate distribution function given their univariate marginals. Most probabilistic dependence problems can be reduced to copulas. Is enabled by a theorem from Sklar:
+Three important 2-copulas are:
+
+<img src="https://imgur.com/bCIWIDX.png" data-canonical-src="https://imgur.com/bCIWIDX.png" width="400" />
+
+
+Copulas are mainly used in dependence modelling, and can be used to construct any continous multivariate distribution function (df) given their univariate marginals. Most probabilistic dependence problems can be reduced to copulas. This is enabled by a theorem from Sklar:
+
+
+<img src="https://imgur.com/5D1QOif.png" data-canonical-src="https://imgur.com/5D1QOif.png" width="700" />
+
 
 
 
