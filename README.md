@@ -142,5 +142,51 @@ julia> density(j1, 0.1:0.2:0.8, 5.1:0.2:5.8) # cdf
 
 ```
 
+### Sampling
 
+``` Julia
+julia> rand(cop, 10^4) # sample a copula
+10000×2 Array{Float64,2}:
+ 0.342484   0.293974
+ 0.970305   0.892417
+ 0.344887   0.670971
+ 0.177868   0.091284
+ ⋮          
+ 0.577286   0.439561
+ 0.560594   0.405275
+ 0.259065   0.0325417
+ 0.424095   0.389324
+
+julia> rand(j1, 10^4) # sample a bivariate distribution
+10000×2 Array{Float64,2}:
+ 0.0737024  -0.791622
+ 0.330924    4.26197
+ 0.14506     5.36363
+ 0.353489    7.28413
+ 0.530191   10.199
+ ⋮          
+ 0.366434    5.22849
+ 0.109036    1.30304
+ 0.555351    6.06244
+ 0.653661   10.6358
+ 0.242393    4.85661
+
+```
 ### Plots
+
+#### Scatter plots
+``` Julia
+julia> samps = rand(cop, 10^4);
+
+julia> scatter(samps)
+```
+
+<img src="https://imgur.com/eot44fc.png" data-canonical-src="https://imgur.com/eot44fc.png" width="700" />
+
+``` Julia
+julia> samps2 = rand(j1, 10^4);
+
+julia> scatter(samps2)
+```
+
+<img src="https://imgur.com/0cTlomm.png" data-canonical-src="https://imgur.com/0cTlomm.png" width="700" />
