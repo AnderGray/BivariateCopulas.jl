@@ -3,7 +3,7 @@
 An implementation of bivariate copulas and bivariate distributions in Julia.
 
 This module has the following capabilities:
-* Construction of continous bivaraite distributions with Distributions.jl
+* Construction of continous bivariate distributions with Distributions.jl
 * Evaluation of cdf and density
 * Conditioning (cdfs)
 * Sampling
