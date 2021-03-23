@@ -20,8 +20,8 @@ Any possible multivariate dependence can be encoded in a [copula](https://en.wik
 
 ### Authors
 
-- [Ander Gray](https://www.researchgate.net/profile/Ander_Gray), Institute for Risk and Uncertainty, University of Liverpool
-- Liam Henry
+- Ander Gray, Institute for Risk and Uncertainty, University of Liverpool
+- Liam T. Henry, Clarus Financial Technology, Belfast
 
 ## Installation
 
