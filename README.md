@@ -219,3 +219,28 @@ julia> j1 = c1(Beta(2, 5), Beta(2, 5));
 julia> plotDen(j1)
 ```
 <img src="https://imgur.com/VKPSZZ1.png" data-canonical-src="https://imgur.com/VKPSZZ1.png" width="700" />
+
+#### Contour plots
+
+``` Julia
+julia> plotContourCdf(j1)
+```
+
+<img src="https://imgur.com/AHUxsT5.png" data-canonical-src="https://imgur.com/AHUxsT5.png" width="700" />
+
+``` Julia
+julia> plotContourDen(j1)
+```
+
+<img src="https://imgur.com/OxDlxQq.png" data-canonical-src="https://imgur.com/OxDlxQq.png" width="700" />
+
+
+Bibliography
+---
+
+* [*Ferson, S., R. Nelsen, J. Hajagos, D. Berleant, J. Zhang, W.T. Tucker, L. Ginzburg and W.L. Oberkampf. 2004. Dependence in Probabilistic Modeling, Dempster-Shafer Theory, and Probability Bounds Analysis. Sandia National Laboratories, SAND2004-3072, Albuquerque, NM*](https://www.osti.gov/servlets/purl/1427286)
+
+* *Nelsen, Roger B. An introduction to copulas. Springer Science & Business Media, 2007*
+
+* *Joe, Harry. Multivariate models and multivariate dependence concepts. CRC Press, 1997*
+* 
