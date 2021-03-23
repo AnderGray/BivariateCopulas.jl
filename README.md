@@ -190,3 +190,32 @@ julia> scatter(samps2)
 ```
 
 <img src="https://imgur.com/0cTlomm.png" data-canonical-src="https://imgur.com/0cTlomm.png" width="700" />
+
+
+#### CDF plots
+``` Julia
+julia> plot(cop)
+``` 
+<img src="https://imgur.com/2MioWzX.png" data-canonical-src="https://imgur.com/2MioWzX.png" width="700" />
+
+``` Julia
+julia> plot(j1)
+```
+<img src="https://imgur.com/zJ4NSWg.png" data-canonical-src="https://imgur.com/zJ4NSWg.png" width="700" />
+
+#### Density plots
+``` Julia
+julia> c1 = Frank(0.8);
+
+julia> plotDen(c1)
+``` 
+<img src="https://imgur.com/Tf6G0cr.png" data-canonical-src="https://imgur.com/Tf6G0cr.png" width="700" />
+
+
+``` Julia
+
+julia> j1 = c1(Beta(2, 5), Beta(2, 5));
+
+julia> plotDen(j1)
+```
+<img src="https://imgur.com/VKPSZZ1.png" data-canonical-src="https://imgur.com/VKPSZZ1.png" width="700" />
