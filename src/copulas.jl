@@ -296,7 +296,7 @@ function spearϕ(a, b)
 end
 
 #spearLB(x, y, ρ) = max(0, x + y - 1, (x + y)/2 - spearϕ(x - y, 1 - ρ))
-spearUB(x, y, ρ) = max( opp(x,y), min(x, y, (x + y -1)/2 + spearϕ(x + y - 1, 1 + ρ)))
+spearUB(x, y, ρ) = max( opp(x,y)[1], min(x, y, (x + y -1)/2 + spearϕ(x + y - 1, 1 + ρ)))
 spearLB(x, y, τ) = [x - spearUB(x, 1 - y, - τ) for x in x, y in y]
 
 
