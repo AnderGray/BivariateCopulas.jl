@@ -1,12 +1,23 @@
+######
+# This file is part of the BivariateCopulas.jl package.
+#
+#   Module definition
+#
+#           University of Liverpool, Institute for Risk and Uncertainty
+#
+#                                           Authors: Ander Gray & Liam T. Henry
+#                                           Email:  ander.gray@liverpool.ac.uk
+######
+
 module BivariateCopulas
 
 using Reexport
 
 @reexport using Distributions             #   https://github.com/JuliaStats/Distributions.jl
 @reexport using PyPlot                    #   https://github.com/JuliaPy/PyPlot.jl
-using PyCall                    #   https://github.com/JuliaPy/PyCall.jl
-using LinearAlgebra             #   Main Library
-using Interpolations            #   https://github.com/JuliaMath/Interpolations.jl
+using PyCall                              #   https://github.com/JuliaPy/PyCall.jl
+using LinearAlgebra                       #   Main Library
+using Interpolations                      #   https://github.com/JuliaMath/Interpolations.jl
 using3D()
 
 import Distributions: cdf, quantile, rand
@@ -35,7 +46,7 @@ export
     copula, density, cdf, sample, rand, CholeskyGaussian,
     conditional, calcCdf, calcDensity, M, W, Pi, Frank, Clayton, Gaussian,
     norm_cdf, bivariate_cdf, mvNormCdf, Joint, invCdf, marginal, quantile, 
-
+    ρCopula, SpearmanCopula, KendalCopula, τCopula,
     samplePlot, plotDensity, plotDen, plotCdf, plot, plotContourCdf, plotContourDen, scatter
 
 

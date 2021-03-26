@@ -250,12 +250,54 @@ function Gaussian(corr = 0)
 end
 
 
+function τCopula( τ = 0 )   # Imprecise copula from kendal tau
+
+    x = y = range(0,stop = 1,length = n);
+
+    cdf = kenLB(x,y,τ)
+
+    return copula(cdf, func = kenLB, param = τ)
+
+end
+
+KendalCopula(τ = 0) = τCopula(τ)
+
+function ρCopula( ρ = 0 ) # Imprecise copula from Spearman rho
+    
+    x = y = range(0,stop = 1,length = n);
+
+    cdf = spearLB(x,y,ρ)
+
+    return copula(cdf, func = spearLB, param = ρ)
+end
+
+SpearmanCopula(ρ = 0 ) = ρCopula( ρ )
+
 indep(X, Y) = [x*y for x in X, y in Y];
 perf(X, Y)  = [min(x,y) for x in X, y in Y];
 opp(X, Y)   = [max(x+y-1,0) for x in X, y in Y];
 F(X,Y,s = 1)      = [log(1+(s^x-1)*(s^y-1)/(s-1))/log(s) for x in X, y in Y]
 Cla(X,Y, t = 0) = [max((x^(-t)+y^(-t)-1)^(-1/t),0) for x in X, y in Y]
 Gau(X,Y, corr = 0)  = [bivariate_cdf(quantile.(Normal(),x),quantile.(Normal(),y), corr) for x in X, y in Y];
+
+
+#kenLB(x, y, τ) = max(0, x+y-1, 0.5*( (x+y)-sqrt( (x-y)^2)+1-τ ) )
+kenUB(x, y, τ) = min(x, y, 0.5*( (x+y-1) + sqrt( (x+y-1)^2 +1+τ )) )
+kenLB(x, y, τ) = [x - kenUB(x, 1 - y, - τ) for x in x, y in y]
+
+#spearϕ(a, b) = 1/6 * ( (max(0, 9*b + 3*sqrt( 9*b^2 - 3*a^6)))^(1/3) + ( max(0,9*b - 3*sqrt(9*b^2 - 3*a^6)))^(1/3) )
+
+function spearϕ(a, b)
+    A = 9*b 
+    B = max(9*b^2 - 3*a^6, 0) 
+    C = (max(0, A + 3*sqrt(B)))^(1/3)
+    D = (max(0, A - 3*sqrt(B)))^(1/3)
+    return 1/6 * (C + D)
+end
+
+#spearLB(x, y, ρ) = max(0, x + y - 1, (x + y)/2 - spearϕ(x - y, 1 - ρ))
+spearUB(x, y, ρ) = max( opp(x,y), min(x, y, (x + y -1)/2 + spearϕ(x + y - 1, 1 + ρ)))
+spearLB(x, y, τ) = [x - spearUB(x, 1 - y, - τ) for x in x, y in y]
 
 
 function GauCopulaDen(corr = 0, X = range(bOt, tOp, length=n), Y = range(bOt, tOp, length=n))
@@ -495,12 +537,13 @@ function Base.show(io::IO, z::Joint)
         if (func == Gau) parName = "r";end
         if (func == F) parName = "s";end
         if (func == Cla) parName = "t";end
+        if (func == spearLB) parName = "ρ";end 
+        if (func == kenLB) parName = "τ";end
         statement2 = "$parName=$(z.copula.param), "
     end
 
     print(io, "Joint ~ $statement1( $statement2$(z.marginal1), $(z.marginal2) )");
 end
-
 
 
 function Base.show(io::IO, z::marginal)
