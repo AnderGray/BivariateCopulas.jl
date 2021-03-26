@@ -16,6 +16,13 @@ This module has the following capabilities:
   * Frank (s is real; -inf for W, 0 for π, inf for M)
   * Clayton (t>=-1; -1 for W, 0 for π and inf for M)
 
+Any possible multivariate dependence can be encoded in a [copula](https://en.wikipedia.org/wiki/Copula_(probability_theory)). Copulas are joint cdfs with standard uniform marginals, and are a way to model dependency independently of marginal distributions. Most probabilistic dependence problems can be reduced to an analysis of copulas.
+
+### Authors
+
+- Ander Gray, Institute for Risk and Uncertainty, University of Liverpool
+- Liam T. Henry, Clarus Financial Technology, Belfast
+
 ## Installation
 
 This is not yet a registered julia package. However this package may be installed using the Julia package manager:
@@ -37,7 +44,7 @@ Three important 2-copulas are:
 
 with W and M being bounds on all 2-copulas: W ≤ C ≤ M
 
-Copulas are mainly used in dependence modelling, and can be used to construct any continous multivariate distribution function (df) given their univariate marginals. Most probabilistic dependence problems can be reduced to copulas. This is enabled by a theorem from Sklar:
+Copulas are mainly used in dependence modelling, and can be used to construct any continous multivariate distribution function (df) given their univariate marginals. This is enabled by a theorem from Sklar:
 
 
 <img src="https://imgur.com/5D1QOif.png" data-canonical-src="https://imgur.com/5D1QOif.png" width="700" />
@@ -71,7 +78,7 @@ Copula ~ Cla(t=-0.2)
 
 ### Sklar's theorem
 
-Use any continous distribution from Distributions.jl to make a bivariate distribution with C
+Use any two continous distribution from Distributions.jl may be used to make a bivariate distribution with C
 
 ```Julia
 julia> C1 = Gaussian(0.8);
@@ -194,6 +201,7 @@ julia> scatter(samps2)
 
 #### CDF plots
 ``` Julia
+julia> using3D()
 julia> plot(cop)
 ``` 
 <img src="https://imgur.com/2MioWzX.png" data-canonical-src="https://imgur.com/2MioWzX.png" width="700" />
