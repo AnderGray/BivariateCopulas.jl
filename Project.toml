@@ -12,4 +12,6 @@ PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
+Interpolations = "0.13"
 Reexport = "1.0"
+
