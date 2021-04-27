@@ -13,3 +13,6 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
 PyPlot = "2.9"
+Distributions = "0.24"
+Interpolations = "0.13"
+Reexport = "1.0"
