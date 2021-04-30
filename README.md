@@ -32,6 +32,13 @@ julia> ]
 pkg> add BivariateCopulas
 ```
 
+or the most up to date version:
+
+```Julia
+julia> ]
+pkg> add https://github.com/AnderGray/BivariateCopulas.jl#master
+```
+
 ## Sklar's theorem
 
 A bivariate copula (2-copula) C is a function C:[0,1]<sup>2</sup> -> [0,1] with the following properties: 
