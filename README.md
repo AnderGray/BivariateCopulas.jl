@@ -25,11 +25,11 @@ Any possible multivariate dependence can be encoded in a [copula](https://en.wik
 
 ## Installation
 
-This is not yet a registered julia package. However this package may be installed using the Julia package manager:
+This is a registered julia package:
 
 ```Julia
 julia> ]
-pkg> add https://github.com/AnderGray/BivariateCopulas.jl.git
+pkg> add BivariateCopulas
 ```
 
 ## Sklar's theorem
