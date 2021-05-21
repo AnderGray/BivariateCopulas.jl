@@ -95,6 +95,9 @@ function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false)
 
     if plot return samplePlot(C,N);end
     if (func == Gau) return CholeskyGaussian(N, C.param) ;end  # Use Cholesky decompostition of the Cov matrix for gaussian copula sampling
+    if func == Cla
+        return _claytonsample(N, C.param)
+    end
 
     x = rand(N);    y = rand(N);
     ux = x;         uy = zeros(N);
@@ -142,6 +145,16 @@ function CholeskyGaussian(N = 1, correlation = 0)
     u = transpose(cdf.(Normal(),x))
 
     return hcat(u[:,1],u[:,2])
+end
+
+function _claytonsample(n, τ)
+    r = rand(n, 2)
+    for i in 1:n
+        v = r[i, 2]
+        u = r[i, 1]
+        r[i, 2] = (1 - u^(-τ) + (u^(1 + τ)*v)^(-(τ/(1 + τ))))^(-1/τ)
+    end
+    return r
 end
 
 function conditional(C :: AbstractCopula, xVal :: Real; plot = false)   # May also work for joint? xVal will be take from invCdf(M1, u1)
@@ -263,7 +276,7 @@ end
 KendalCopula(τ = 0) = τCopula(τ)
 
 function ρCopula( ρ = 0 ) # Imprecise copula from Spearman rho
-    
+
     x = y = range(0,stop = 1,length = n);
 
     cdf = spearLB(x,y,ρ)
@@ -288,8 +301,8 @@ kenLB(x, y, τ) = [x - kenUB(x, 1 - y, - τ) for x in x, y in y]
 #spearϕ(a, b) = 1/6 * ( (max(0, 9*b + 3*sqrt( 9*b^2 - 3*a^6)))^(1/3) + ( max(0,9*b - 3*sqrt(9*b^2 - 3*a^6)))^(1/3) )
 
 function spearϕ(a, b)
-    A = 9*b 
-    B = max(9*b^2 - 3*a^6, 0) 
+    A = 9*b
+    B = max(9*b^2 - 3*a^6, 0)
     C = (max(0, A + 3*sqrt(B)))^(1/3)
     D = (max(0, A - 3*sqrt(B)))^(1/3)
     return 1/6 * (C + D)
@@ -376,7 +389,7 @@ function conditional(J :: Joint, xVal :: Real; plot = false)   # May also work f
 
     if (plot) plot2(J.cdf, conditional, xVal) end
     return conditional
-    
+
 end
 
 function density2(J :: Joint, X = J.xRange, Y = J.yRange)
@@ -410,7 +423,7 @@ function invCdf(X :: Sampleable{Univariate}, u)
     return quantile.(X,u)                           # We will also need the interpolartor here
 end
 
-function calcDensity(J :: AbstractJoint)        
+function calcDensity(J :: AbstractJoint)
 
     #return calcDensity(J.cdf, J.xRange, J.yRange)
 
@@ -537,7 +550,7 @@ function Base.show(io::IO, z::Joint)
         if (func == Gau) parName = "r";end
         if (func == F) parName = "s";end
         if (func == Cla) parName = "t";end
-        if (func == spearLB) parName = "ρ";end 
+        if (func == spearLB) parName = "ρ";end
         if (func == kenLB) parName = "τ";end
         statement2 = "$parName=$(z.copula.param), "
     end
@@ -560,4 +573,3 @@ function linInterp(A, x)
 
     return y0 + (x-x0) * (y1-y0)/(x1-x0)
 end
-
