@@ -151,7 +151,7 @@ function _claytonsample(n, t)
     for i in 1:n
         v = r[i, 2]
         u = r[i, 1]
-            r[i, 2] = (1 - u^(-t) + (u^(1 + t)*v)^(-(t/(1 + t))))^(-1/t)
+        r[i, 2] = (1 - u^(-t) + (u^(1 + t)*v)^(-(t/(1 + t))))^(-1/t)
     end
     return r
 end
