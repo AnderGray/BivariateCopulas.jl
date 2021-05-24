@@ -95,9 +95,7 @@ function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false)
 
     if plot return samplePlot(C,N);end
     if (func == Gau) return CholeskyGaussian(N, C.param) ;end  # Use Cholesky decompostition of the Cov matrix for gaussian copula sampling
-    if func == Cla
-        return _claytonsample(N, C.param)
-    end
+    func == Cla && return _claytonsample(N, C.param)
 
     x = rand(N);    y = rand(N);
     ux = x;         uy = zeros(N);
@@ -147,12 +145,13 @@ function CholeskyGaussian(N = 1, correlation = 0)
     return hcat(u[:,1],u[:,2])
 end
 
-function _claytonsample(n, τ)
+function _claytonsample(n, t)
     r = rand(n, 2)
+    t == 0 && return r
     for i in 1:n
         v = r[i, 2]
         u = r[i, 1]
-        r[i, 2] = (1 - u^(-τ) + (u^(1 + τ)*v)^(-(τ/(1 + τ))))^(-1/τ)
+            r[i, 2] = (1 - u^(-t) + (u^(1 + t)*v)^(-(t/(1 + t))))^(-1/t)
     end
     return r
 end
