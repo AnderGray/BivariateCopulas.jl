@@ -18,7 +18,6 @@ using Reexport
 using PyCall                              #   https://github.com/JuliaPy/PyCall.jl
 using LinearAlgebra                       #   Main Library
 using Interpolations                      #   https://github.com/JuliaMath/Interpolations.jl
-using3D()
 
 import Distributions: cdf, quantile, rand
 
@@ -41,13 +40,19 @@ include("copulas.jl")
 include("NormalDistribution.jl")
 include("plotting.jl")
 
+function __init__()
+    using3D()
+end
 
-export 
+
+export
     copula, density, cdf, sample, rand, CholeskyGaussian,
     conditional, calcCdf, calcDensity, M, W, Pi, Frank, Clayton, Gaussian,
-    norm_cdf, bivariate_cdf, mvNormCdf, Joint, invCdf, marginal, quantile, 
+    norm_cdf, bivariate_cdf, mvNormCdf, Joint, invCdf, marginal, quantile,
     ρCopula, SpearmanCopula, KendalCopula, τCopula,
-    samplePlot, plotDensity, plotDen, plotCdf, plot, plotContourCdf, plotContourDen, scatter
+    samplePlot, plotDensity, plotDen, plotCdf, plot, plotContourCdf, plotContourDen, scatter,
+
+    rotate90, rotate180, rotate270
 
 
 end #BivariateCopulas
