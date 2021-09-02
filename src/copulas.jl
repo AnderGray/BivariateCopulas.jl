@@ -88,13 +88,14 @@ function (obj::copula)(X :: ContinuousUnivariateDistribution,Y :: ContinuousUniv
     return Joint(X, Y,obj)
 end
 
-function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false)
+function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false, useInterp = false)
 
-    useInterp = false;      # Set true to use interpolator
+    # Set true to use interpolator
+    useInterp = useInterp
     if ismissing(C.func) func = 0; useInterp = true else func = C.func end
 
     if plot return samplePlot(C,N);end
-    if (func == Gau) return CholeskyGaussian(N, C.param) ;end  # Use Cholesky decompostition of the Cov matrix for gaussian copula sampling
+    func == Gau && return CholeskyGaussian(N, C.param)   # Use Cholesky decompostition of the Cov matrix for gaussian copula sampling
     func == Cla && return _claytonsample(N, C.param)
 
     x = rand(N);    y = rand(N);
@@ -125,8 +126,18 @@ function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false)
         #uy[i] = yitp_linear(y[i] * m);
 
         #uy[i] = findlast(conditional .<= y[i])/m; end
-        if !issorted(conditional[i,:]) conditional[i,:] = sort(conditional[i,:]) end
-        inpl = LinearInterpolation(conditional[i,:], ygrid, extrapolation_bc = Flat())
+        thisCond = conditional[i,:]
+        thisGrid = ygrid
+
+        if !issorted(thisCond) thisCond = sort(thisCond) end
+
+        idx = unique(z ->thisCond[z], 1:n)    # Some magic: https://discourse.julialang.org/t/unique-indices-method-similar-to-matlab/34446
+                                                    # Gets unique indicies from the vector
+
+        thisCond = thisCond[idx]
+        thisGrid = ygrid[idx]
+
+        inpl = LinearInterpolation(thisCond, thisGrid, extrapolation_bc = Flat())
         uy[i] = inpl(y[i])
     end
     return hcat(ux,uy);
@@ -330,6 +341,97 @@ Arch1(X,Y,theta = 0) = [1 - ((1-x)^theta + (1-y)^theta - (1-x)^theta * (1-y)^the
 
 mvNormCdf(X,Y,cor) = [bivariate_cdf(x,y,cor) for x in X, y in Y];
 
+###
+#   Copula rotations
+###
+function rotate90(C :: copula)
+
+    C_func = C.func;
+    C_param = C.param;
+    n = 200
+    if !ismissing(C_func)
+        if !ismissing(C_param)
+            Rotate90(xs, ys, C_param) = [y - C_func(1 - x, y, C_param)[1] for x in xs, y in ys]
+            u = v = range(0, stop=1,length = n);
+            cdf = Rotate90(u, v, C_param)
+            cdf[1,:] .= 0
+            cdf[:,1] .= 0
+            return copula(cdf, func = Rotate90, param = C_param)
+        else
+            Rotate90(xs, ys) = [y - C_func(1 - x, y)[1] for x in xs, y in ys]
+            u = v = range(0, stop=1, length = n);
+            cdf = Rotate90(u, v)
+            return copula(cdf, func = Rotate90)
+        end
+    end
+
+    ###
+    #   Here we need to figure out how to rotate the cdf matrix
+    ###
+
+    throw(ArgumentError("Currently can only rotate copulas with functions defined"))
+
+end
+
+function rotate180(C :: copula)
+
+    C_func = C.func;
+    C_param = C.param;
+    n = 200
+    if !ismissing(C_func)
+        if !ismissing(C_param)
+            Rotate180(xs, ys, C_param) = [x + y - 1 + C_func(1 - x, 1 - y, C_param)[1] for x in xs, y in ys]
+            u = v = range(0, stop=1,length = n);
+            cdf = Rotate180(u, v, C_param)
+            cdf[1,:] .= 0
+            cdf[:,1] .= 0
+            return copula(cdf, func = Rotate180, param = C_param)
+        else
+            Rotate180(xs, ys) = [x + y - 1 + C_func(1 - x, 1 - y)[1] for x in xs, y in ys]
+            u = v = range(0, stop=1, length = n);
+            cdf = Rotate180(u, v)
+            return copula(cdf, func = Rotate180)
+        end
+    end
+
+    ###
+    #   Here we need to figure out how to rotate the cdf matrix
+    ###
+
+    throw(ArgumentError("Currently can only rotate copulas with functions defined"))
+
+end
+
+function rotate270(C :: copula)
+
+    C_func = C.func;
+    C_param = C.param;
+    n = 200
+    if !ismissing(C_func)
+        if !ismissing(C_param)
+            Rotate270(xs, ys, C_param) = [x - C_func(x, 1 - y, C_param)[1] for x in xs, y in ys]
+            u = v = range(0, stop=1,length = n);
+            cdf = Rotate270(u, v, C_param)
+            cdf[1,:] .= 0
+            cdf[:,1] .= 0
+            return copula(cdf, func = Rotate270, param = C_param)
+        else
+            Rotate270(xs, ys) = [x - C_func(x, 1 - y)[1] for x in xs, y in ys]
+            u = v = range(0, stop=1, length = n);
+            cdf = Rotate270(u, v)
+            return copula(cdf, func = Rotate270)
+        end
+    end
+
+    ###
+    #   Here we need to figure out how to rotate the cdf matrix
+    ###
+
+    throw(ArgumentError("Currently can only rotate copulas with functions defined"))
+
+end
+
+
 mutable struct Joint <: AbstractJoint
 
     marginal1 :: ContinuousUnivariateDistribution
@@ -408,7 +510,7 @@ end
 
 function sample(J :: AbstractJoint, N :: Int64 =1)
 
-    copulaSamples = sample(J.copula,N)
+    copulaSamples = sample(J.copula, N)
 
     x = invCdf.(J.marginal1,copulaSamples[:,1]);
     y = invCdf.(J.marginal2,copulaSamples[:,2]);
