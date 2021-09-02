@@ -348,7 +348,6 @@ function rotate90(C :: copula)
 
     C_func = C.func;
     C_param = C.param;
-    n = 200
     if !ismissing(C_func)
         if !ismissing(C_param)
             Rotate90(xs, ys, C_param) = [y - C_func(1 - x, y, C_param)[1] for x in xs, y in ys]
@@ -377,7 +376,6 @@ function rotate180(C :: copula)
 
     C_func = C.func;
     C_param = C.param;
-    n = 200
     if !ismissing(C_func)
         if !ismissing(C_param)
             Rotate180(xs, ys, C_param) = [x + y - 1 + C_func(1 - x, 1 - y, C_param)[1] for x in xs, y in ys]
@@ -406,7 +404,6 @@ function rotate270(C :: copula)
 
     C_func = C.func;
     C_param = C.param;
-    n = 200
     if !ismissing(C_func)
         if !ismissing(C_param)
             Rotate270(xs, ys, C_param) = [x - C_func(x, 1 - y, C_param)[1] for x in xs, y in ys]
@@ -441,8 +438,8 @@ mutable struct Joint <: AbstractJoint
     xRange
     yRange
 
-    cdf ::  Union{Array{Float64,2},Missing}     # Or should the density/ cdf be calculated on the fly from the copula?
-    density :: Union{Array{Float64,2},Missing}
+    cdf ::  Union{Array{Float64,2}, Missing}     # Or should the density/ cdf be calculated on the fly from the copula?
+    density :: Union{Array{Float64,2}, Missing}
 
     function Joint(marginal1, marginal2, copula)
 
