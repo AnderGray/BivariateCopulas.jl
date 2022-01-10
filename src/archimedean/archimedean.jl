@@ -10,6 +10,10 @@ function rosenblatt(M::AbstractMatrix, c::ArchimedeanCopula)
     ]
 end
 
+function density(c::ArchimedeanCopula, u1::Real, u2::Real, )
+    return φ²(φ⁻¹(u1, c) + φ⁻¹(u2, c), c) * ∇φ⁻¹(u1, c) * ∇φ⁻¹(u2, c)
+end
+
 function sample(c::ArchimedeanCopula, n::Int64)
     @assert n > 0
     return inverse_rosenblatt(rand(2, n), c)
