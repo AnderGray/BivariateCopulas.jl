@@ -14,17 +14,21 @@ struct Clayton <: ArchimedeanCopula
     end
 end
 
-function gen(x::Real, c::Clayton)
+function φ(x::Real, c::Clayton)
     return (1 + x)^(-1 / c.ϑ)
 end
 
-function inverse_gen(x::Real, c::Clayton)
+function φ⁻¹(x::Real, c::Clayton)
     return x^(-c.ϑ) - 1
 end
 
-function gen_derivative(x::Real, c::Clayton)
+function φ²(x::Real, c::Clayton)
     α = 1 / c.ϑ
     return (α + α^2) * (1 + x)^(-(1 + α))
+end
+
+function ∇φ⁻¹(x::Real, c::Clayton)
+    return -c.ϑ * x^(-c.ϑ - 1)
 end
 
 function inverse_rosenblatt(U::AbstractMatrix, c::Clayton)

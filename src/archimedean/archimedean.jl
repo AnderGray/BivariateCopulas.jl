@@ -6,10 +6,7 @@ function rosenblatt(M::AbstractMatrix, c::ArchimedeanCopula)
 
     return [
         u1'
-        (
-            gen_derivative.(inverse_gen.(u1, c) + inverse_gen.(u2, c), c) ./
-            gen_derivative.(inverse_gen.(u1, c), c)
-        )'
+        (φ².(φ⁻¹.(u1, c) + φ⁻¹.(u2, c), c) ./ φ².(φ⁻¹.(u1, c), c))'
     ]
 end
 
