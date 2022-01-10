@@ -36,14 +36,14 @@ abstract type AbstractMarginal <: ContinuousUnivariateDistribution end
 include("archimedean/archimedean.jl")
 include("copulas.jl")
 include("NormalDistribution.jl")
-include("plotting.jl")
 
 function __init__()
     @require PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0" begin
         @require PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee" begin
             using PyCall
+            using PyPlot
             import PyPlot: plot
-
+            include("plotting.jl")
             return using3D()
         end
     end
