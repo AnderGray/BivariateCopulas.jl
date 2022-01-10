@@ -24,7 +24,8 @@ end
 
 function φ²(x::Real, c::Clayton)
     α = 1 / c.ϑ
-    return (α + α^2) * (1 + x)^(-(1 + α))
+    β = α * (1 + α);
+    return β * (1 + x)^(-1 * (β + 1))
 end
 
 function ∇φ⁻¹(x::Real, c::Clayton)
