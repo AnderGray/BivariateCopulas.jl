@@ -12,16 +12,13 @@
 module BivariateCopulas
 
 using Reexport
+using Requires
 
 @reexport using Distributions             #   https://github.com/JuliaStats/Distributions.jl
-@reexport using PyPlot                    #   https://github.com/JuliaPy/PyPlot.jl
-using PyCall                              #   https://github.com/JuliaPy/PyCall.jl
 using LinearAlgebra                       #   Main Library
 using Interpolations                      #   https://github.com/JuliaMath/Interpolations.jl
 
 import Distributions: cdf, quantile, rand
-
-import PyPlot: plot
 
 import Base: rand
 
@@ -42,7 +39,14 @@ include("NormalDistribution.jl")
 include("plotting.jl")
 
 function __init__()
-    return using3D()
+    @require PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0" begin
+        @require PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee" begin
+            using PyCall
+            import PyPlot: plot
+
+            return using3D()
+        end
+    end
 end
 
 export copula,
