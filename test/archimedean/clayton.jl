@@ -13,6 +13,10 @@ n = 10^6
         u = BivariateCopulas.sample(c, n)
         @test corkendall(u') ≈ [1.0 τ(c); τ(c) 1.0] atol = 0.01
 
+        c = Clayton(0)
+        u = BivariateCopulas.sample(c, n)
+        @test corkendall(u') ≈ [1.0 τ(c); τ(c) 1.0] atol = 0.01
+
         c = Clayton(2)
         u = BivariateCopulas.sample(c, n)
         @test corkendall(u') ≈ [1.0 τ(c); τ(c) 1.0] atol = 0.01
