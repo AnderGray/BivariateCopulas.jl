@@ -10,7 +10,11 @@ function rosenblatt(M::AbstractMatrix, c::ArchimedeanCopula)
     ]
 end
 
-function density(c::ArchimedeanCopula, u1::Real, u2::Real, )
+function cdf(c::ArchimedeanCopula, u1::Real, u2::Real)
+    return φ(φ⁻¹(u1, c) + φ⁻¹(u2, c), c)
+end
+
+function density(c::ArchimedeanCopula, u1::Real, u2::Real)
     return φ²(φ⁻¹(u1, c) + φ⁻¹(u2, c), c) * ∇φ⁻¹(u1, c) * ∇φ⁻¹(u2, c)
 end
 
