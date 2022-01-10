@@ -27,6 +27,11 @@ n = 10^6
     end
 
     @testset "rosenblatt" begin
+        c = Clayton(-0.5)
+        u = BivariateCopulas.sample(c, n)
+
+        @test corkendall(rosenblatt(u, c)') ≈ [1.0 0.0; 0.0 1.0] atol = 0.01
+
         c = Clayton(2)
         u = BivariateCopulas.sample(c, n)
 

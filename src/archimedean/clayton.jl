@@ -19,7 +19,7 @@ end
 
 function gen_derivative(x::Real, c::Clayton)
     α = 1 / c.ϑ
-    return gamma(1 + α) / gamma(α) * (1 + x)^(-(1 + α))
+    return (α + α^2) * (1 + x)^(-(1 + α))
 end
 
 function inverse_rosenblatt(U::AbstractMatrix, c::Clayton)

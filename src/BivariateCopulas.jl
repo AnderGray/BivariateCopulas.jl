@@ -18,7 +18,6 @@ using Reexport
 using PyCall                              #   https://github.com/JuliaPy/PyCall.jl
 using LinearAlgebra                       #   Main Library
 using Interpolations                      #   https://github.com/JuliaMath/Interpolations.jl
-using SpecialFunctions
 
 import Distributions: cdf, quantile, rand
 
@@ -84,6 +83,7 @@ export copula,
     rotate180,
     rotate270,
     Clayton,
+    Independence,
     rosenblatt,
     inverse_rosenblatt,
     τ
