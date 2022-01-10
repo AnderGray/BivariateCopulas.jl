@@ -3,7 +3,12 @@ struct Clayton <: ArchimedeanCopula
 
     function Clayton(θ::Real)
         # bivariate clayton can go as low as -1
-        @assert -1 <= θ <= Inf
+        # TODO: Return W and M for -1 and Inf
+        @assert -1 < θ < Inf
+
+        if θ == 0.0
+            return Independence()
+        end
 
         return new(θ)
     end
@@ -25,10 +30,6 @@ end
 function inverse_rosenblatt(U::AbstractMatrix, c::Clayton)
     u1 = U[1, :]
     u2 = U[2, :]
-
-    if c.ϑ == 0.0
-        return U
-    end
 
     return [u1'; ((u1 .^ (-c.ϑ) .* (u2 .^ (-c.ϑ / (c.ϑ + 1)) .- 1) .+ 1) .^ (-1 / c.ϑ))']
 end

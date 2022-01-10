@@ -18,4 +18,5 @@ function sample(c::ArchimedeanCopula, n::Int64)
     return inverse_rosenblatt(rand(2, n), c)
 end
 
+include("independence.jl")
 include("clayton.jl")
