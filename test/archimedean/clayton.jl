@@ -1,16 +1,16 @@
 n = 10^6
 θ = [-0.5, 2, 10]
 
-function _clayton_density(u, v, ϑ)
-    return (ϑ + 1) * (u * v)^(-ϑ - 1) * (u^(-ϑ) + v^(-ϑ) - 1)^(-(2ϑ + 1) / ϑ)
-end
-
 @testset "Clayton" begin
     @testset "constructor" begin
         @test isa(Clayton(0), Independence)
-        @test_throws AssertionError Clayton(-1)
         @test_throws AssertionError Clayton(-2)
-        @test_throws AssertionError Clayton(Inf)
+
+        @test_logs (:warn, "Clayton returns a W copula for ϑ < -0.5") Clayton(-0.7)
+        @test_logs (:warn, "Clayton returns an independence copula for ϑ == 0.0") Clayton(
+            0.0
+        )
+        @test_logs (:warn, "Clayton returns an M copula for ϑ == Inf") Clayton(Inf)
     end
 
     @testset "τ" begin
@@ -44,12 +44,5 @@ end
         end
     end
 
-    @testset "density" begin
-        u = range(0.01, 1, 10)
-        v = range(0.01, 1, 10)
-
-        for ϑ in θ
-            @test density.(Clayton(ϑ), u, v) ≈ _clayton_density.(u, v, ϑ)
-        end
-    end
+    # TODO: Test density
 end

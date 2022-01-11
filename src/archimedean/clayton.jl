@@ -1,16 +1,22 @@
 struct Clayton <: ArchimedeanCopula
     ϑ::Real
 
-    function Clayton(θ::Real)
+    function Clayton(ϑ::Real)
         # bivariate clayton can go as low as -1
-        # TODO: Return W and M for -1 and Inf
-        @assert -1 < θ < Inf
+        @assert -1 <= ϑ <= Inf
 
-        if θ == 0.0
+        if ϑ < -0.5
+            @warn "Clayton returns a W copula for ϑ < -0.5"
+            return W()
+        elseif ϑ == 0.0
+            @warn "Clayton returns an independence copula for ϑ == 0.0"
             return Independence()
+        elseif ϑ == Inf
+            @warn "Clayton returns an M copula for ϑ == Inf"
+            return M()
         end
 
-        return new(θ)
+        return new(ϑ)
     end
 end
 
