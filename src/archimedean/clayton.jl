@@ -32,6 +32,13 @@ function ∇φ⁻¹(x::Real, c::Clayton)
     return -c.ϑ * x^(-c.ϑ - 1)
 end
 
+function rosenblatt(M::AbstractMatrix, c::Clayton)
+    u = 1 .+ cumsum(φ⁻¹.(M, c); dims=1)
+    a = -1 / c.ϑ - 1
+
+    return [M[1, :]'; (u[2, :] .^ a ./ u[1, :] .^ a)']
+end
+
 function inverse_rosenblatt(U::AbstractMatrix, c::Clayton)
     u1 = U[1, :]
     u2 = U[2, :]
