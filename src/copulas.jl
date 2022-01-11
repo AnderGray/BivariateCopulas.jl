@@ -96,7 +96,6 @@ function sample(C :: AbstractCopula, N ::Int64 = 1; plot = false, useInterp = fa
 
     if plot return samplePlot(C,N);end
     func == Gau && return CholeskyGaussian(N, C.param)   # Use Cholesky decompostition of the Cov matrix for gaussian copula sampling
-    func == Cla && return _claytonsample(N, C.param)
 
     x = rand(N);    y = rand(N);
     ux = x;         uy = zeros(N);
@@ -154,17 +153,6 @@ function CholeskyGaussian(N = 1, correlation = 0)
     u = transpose(cdf.(Normal(),x))
 
     return hcat(u[:,1],u[:,2])
-end
-
-function _claytonsample(n, t)
-    r = rand(n, 2)
-    t == 0 && return r
-    for i in 1:n
-        v = r[i, 2]
-        u = r[i, 1]
-        r[i, 2] = (1 - u^(-t) + (u^(1 + t)*v)^(-(t/(1 + t))))^(-1/t)
-    end
-    return r
 end
 
 function conditional(C :: AbstractCopula, xVal :: Real; plot = false)   # May also work for joint? xVal will be take from invCdf(M1, u1)
@@ -260,11 +248,6 @@ function Frank(s = 1)                                     #   Frank copula
     return copula(F(x,y,s), func = F, param = s);
 end
 
-function Clayton(t = 0)                                  #   Clayton copula
-    x = y = range(0, stop=1, length = n);                          #   t>-1; -1 for opposite, 0 for indep and inf for perfect
-    return copula(Cla(x,y,t), func = Cla, param = t);
-end
-
 function Gaussian(corr = 0)
     x = y = range(0,stop=1,length = n);
     cdf = Gau(x,y,corr);
@@ -300,7 +283,6 @@ indep(X, Y) = [x*y for x in X, y in Y];
 perf(X, Y)  = [min(x,y) for x in X, y in Y];
 opp(X, Y)   = [max(x+y-1,0) for x in X, y in Y];
 F(X,Y,s = 1)      = [log(1+(s^x-1)*(s^y-1)/(s-1))/log(s) for x in X, y in Y]
-Cla(X,Y, t = 0) = [max((x^(-t)+y^(-t)-1)^(-1/t),0) for x in X, y in Y]
 Gau(X,Y, corr = 0)  = [bivariate_cdf(quantile.(Normal(),x),quantile.(Normal(),y), corr) for x in X, y in Y];
 
 
@@ -547,7 +529,6 @@ M(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = 
 W(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = W()(M1,M2)
 Pi(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = Pi()(M1,M2)
 Frank(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, s = 1) = Frank(s)(M1,M2)
-Clayton(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, t = 0) = Clayton(t)(M1,M2)
 Gaussian(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, corr = 0) = Gaussian(corr)(M1,M2)
 
 struct marginal <: AbstractMarginal
