@@ -664,44 +664,48 @@ function Base.show(io::IO, z::copula)
     return print(io, "Copula ~ $statement1($statement2)")
 end
 
-# function Base.show(io::IO, z::Joint)
-#     statement1 = "Arbitrary"
-#     statement2 = ""
+function Base.show(io::IO, z::Joint)
+    statement1 = "Arbitrary"
+    statement2 = ""
 
-#     if (!ismissing(z.copula.func))
-#         func = z.copula.func
-#         if (func == indep)
-#             func = "π"
-#         end
-#         if (func == perf)
-#             func = "M"
-#         end
-#         if (func == opp)
-#             func = "W"
-#         end
-#         statement1 = "$(func)"
-#     end
+    if isa(z.copula, ArchimedeanCopula)
+        statement1 = string(typeof(z.copula))
+    elseif (!ismissing(z.copula.func))
+        func = z.copula.func
+        if (func == indep)
+            func = "π"
+        end
+        if (func == perf)
+            func = "M"
+        end
+        if (func == opp)
+            func = "W"
+        end
+        statement1 = "$(func)"
+    end
 
-#     if (!ismissing(z.copula.param))
-#         func = z.copula.func
-#         parName = "par"
-#         if (func == Gau)
-#             parName = "r"
-#         end
-#         if (func == F)
-#             parName = "s"
-#         end
-#         if (func == spearLB)
-#             parName = "ρ"
-#         end
-#         if (func == kenLB)
-#             parName = "τ"
-#         end
-#         statement2 = "$parName=$(z.copula.param), "
-#     end
+    if isa(z.copula, ArchimedeanCopula)
+        statement2 = "ϑ=$(z.copula.ϑ)"
+    elseif (!ismissing(z.copula.param))
+        func = z.copula.func
+        parName = "par"
+        if (func == Gau)
+            parName = "r"
+        end
+        if (func == F)
+            parName = "s"
+        end
+        if (func == spearLB)
+            parName = "ρ"
+        end
+        if (func == kenLB)
+            parName = "τ"
+        end
+        statement2 = "$parName=$(z.copula.param)"
+    end
 
-#     return print(io, "Joint ~ $statement1( $statement2$(z.marginal1), $(z.marginal2) )")
-# end
+    return print(io, "Joint ~ $statement1($statement2, $(z.marginal1), $(z.marginal2))")
+end
 
 function Base.show(io::IO, z::marginal)
     return print(io, "Distribution ~ ( range=[$(z.range[1]),$(z.range[end])])")
