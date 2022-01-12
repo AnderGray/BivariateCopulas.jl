@@ -1,7 +1,7 @@
 name = "BivariateCopulas"
 uuid = "1f45d95c-a8db-40f3-940f-b9beb0518965"
 authors = ["Ander Gray <ander.gray@liverpool.ac.uk>"]
-version = "0.1.2"
+version = "0.1.3"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
