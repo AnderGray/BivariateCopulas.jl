@@ -60,5 +60,24 @@ n = 10^6
         @test isa(c(X, Y), Joint)
     end
 
-    # TODO: Test density
+    @testset "cdf" begin
+        x = [0:0.25:1;]
+        y = x
+
+        @test cdf.(Clayton(2), x, y) ≈
+            [0.0, 0.1796053020267749, 0.37796447300922725, 0.6255432421712244, 1.0]
+        @test cdf.(Clayton(-0.5), x, y) ≈
+            [1.0, 0.0, 0.17157287525381, 0.5358983848622453, 1.0]
+    end
+
+    @testset "density" begin
+        x = [0:0.25:1;]
+        y = x
+
+        @test isnan(BivariateCopulas.density(Clayton(2), x[1], y[1]))
+        @test BivariateCopulas.density.(Clayton(2), x[2:end], y[2:end]) ≈
+            [2.2965556205046926, 1.481003649342278, 1.614508582188617, 3.0]
+
+        @test BivariateCopulas.density.(Clayton(-0.5), x, y) ≈ [Inf, 2.0, 1.0, 2 / 3, 0.5]
+    end
 end
