@@ -23,7 +23,7 @@ n = 10^6
         for ϑ in θ
             c = Clayton(ϑ)
             u = BivariateCopulas.sample(c, n)
-            @test corkendall(u') ≈ [1.0 τ(c); τ(c) 1.0] atol = 0.01
+            @test corkendall(u) ≈ [1.0 τ(c); τ(c) 1.0] atol = 0.01
         end
     end
 
@@ -31,7 +31,7 @@ n = 10^6
         for ϑ in θ
             c = Clayton(ϑ)
             u = BivariateCopulas.sample(c, n)
-            @test corkendall(rosenblatt(u, c)') ≈ [1.0 0.0; 0.0 1.0] atol = 0.01
+            @test corkendall(rosenblatt(u, c)) ≈ [1.0 0.0; 0.0 1.0] atol = 0.01
         end
     end
 
