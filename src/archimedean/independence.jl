@@ -1,0 +1,1 @@
+struct Independence <: ArchimedeanCopula end
