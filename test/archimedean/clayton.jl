@@ -13,6 +13,14 @@ n = 10^6
         @test_logs (:warn, "Clayton returns an M copula for ϑ == Inf") Clayton(Inf)
     end
 
+    @testset "generators" begin
+        u = [0:0.1:1;]
+        for ϑ in θ
+            c = Clayton(ϑ)
+            @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
+        end
+    end
+
     @testset "τ" begin
         @test τ(Clayton(θ[1])) == -1 / 3
         @test τ(Clayton(θ[2])) == 0.5
