@@ -20,13 +20,6 @@ struct Clayton <: ArchimedeanCopula
     end
 end
 
-function (obj::Clayton)(
-    X::ContinuousUnivariateDistribution, Y::ContinuousUnivariateDistribution
-)             #Constructing a joint distribution using the copula
-    return Joint(X, Y, obj)
-end
-
-
 function φ(x::Real, c::Clayton)
     return (1 + x)^(-1 / c.ϑ)
 end

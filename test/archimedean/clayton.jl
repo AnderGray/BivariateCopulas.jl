@@ -44,5 +44,13 @@ n = 10^6
         end
     end
 
+    @testset "sklar's theorem" begin
+        c = Clayton(2)
+        X = Normal()
+        Y = Normal()
+
+        @test isa(c(X, Y), Joint)
+    end
+
     # TODO: Test density
 end
