@@ -187,9 +187,11 @@ julia> rand(j1, 10^4) # sample a bivariate distribution
 
 ```
 ### Plots
+PyPlot.jl may be used for this packages plotting features. If so, it must be explicitally stated:
 
 #### Scatter plots
 ``` Julia
+julia> using PyPlot
 julia> samps = rand(cop, 10^4);
 
 julia> scatter(samps)
