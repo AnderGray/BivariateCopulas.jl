@@ -4,7 +4,15 @@ function rosenblatt(M::AbstractMatrix, c::ArchimedeanCopula)
     u1 = M[:, 1]
     u2 = M[:, 2]
 
-    return [u1 (φ².(φ⁻¹.(u1, c) + φ⁻¹.(u2, c), c) ./ φ².(φ⁻¹.(u1, c), c))]
+    return [u1 (φ¹.(φ⁻¹.(u1, c) + φ⁻¹.(u2, c), c) ./ φ¹.(φ⁻¹.(u1, c), c))]
+end
+
+function inverse_rosenblatt(U::AbstractMatrix, c::ArchimedeanCopula)
+    u2 = map(eachrow(U)) do u
+        return find_zero(x -> rosenblatt([u[1] x], c)[2] - u[2], (0, 1), Roots.A42())
+    end
+
+    return [U[:, 1] u2]
 end
 
 function cdf(c::ArchimedeanCopula, u1::Real, u2::Real)
@@ -29,3 +37,4 @@ end
 
 include("independence.jl")
 include("clayton.jl")
+include("frank.jl")

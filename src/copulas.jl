@@ -276,11 +276,6 @@ function Pi()
     return copula(indep(x, y); density=ones(n, n), func=indep)
 end
 
-function Frank(s=1)                                     #   Frank copula
-    x = y = range(0; stop=1, length=n)                          #   s>0; 0 for perfect, 1 for indep, inf for oposite
-    return copula(F(x, y, s); func=F, param=s)
-end
-
 function Gaussian(corr=0)
     x = y = range(0; stop=1, length=n)
     cdf = Gau(x, y, corr)
