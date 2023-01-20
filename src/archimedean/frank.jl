@@ -14,25 +14,50 @@ struct Frank <: ArchimedeanCopula
     end
 end
 
+"""
+    φ(x::Real, c::Frank)
+
+Generator of the Frank copula.
+"""
 function φ(x::Real, c::Frank)
     return -1 / c.ϑ * log(exp(-x) * (exp(-c.ϑ) - 1) + 1)
 end
 
-function φ⁻¹(x::Real, c::Frank)
-    return -log((exp(-c.ϑ * x) - 1) / (exp(-c.ϑ) - 1))
-end
+"""
+    D¹φ(x::Real, c::Frank)
 
-function φ¹(x::Real, c::Frank)
+First derivative of the Frank copula generator.
+"""
+function D¹φ(x::Real, c::Frank)
     z = (1 - exp(-c.ϑ)) * exp(-x)
     return -(1 / c.ϑ) * z / (1 - z)
 end
 
-function φ²(x::Real, c::Frank)
+"""
+    D²φ(x::Real, c::Frank)
+
+Second derivative of the Frank copula generator.
+"""
+function D²φ(x::Real, c::Frank)
     z = (1 - exp(-c.ϑ)) * exp(-x)
     return (1 / c.ϑ) * z / (1 - z)^2
 end
 
-function ∇φ⁻¹(x::Real, c::Frank)
+"""
+    φ⁻¹(x::Real, c::Frank)
+
+Inverse generator of the Frank copula.
+"""
+function φ⁻¹(x::Real, c::Frank)
+    return -log((exp(-c.ϑ * x) - 1) / (exp(-c.ϑ) - 1))
+end
+
+"""
+    D¹φ⁻¹(x::Real, c::Frank)
+
+First derivative of the Frank copula inverse generator.
+"""
+function D¹φ⁻¹(x::Real, c::Frank)
     return (c.ϑ * exp(-c.ϑ * x)) / (exp(-c.ϑ * x) - 1)
 end
 

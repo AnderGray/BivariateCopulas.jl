@@ -17,26 +17,51 @@ struct Clayton <: ArchimedeanCopula
     end
 end
 
+"""
+    φ(x::Real, c::Clayton)
+
+Generator of the Clayton copula.
+"""
 function φ(x::Real, c::Clayton)
     return (1 + x)^(-1 / c.ϑ)
 end
 
-function φ⁻¹(x::Real, c::Clayton)
-    return x^(-c.ϑ) - 1
-end
+"""
+    D¹φ(x::Real, c::Clayton)
 
-function φ¹(x::Real, c::Clayton)
+First derivative of the Clayton copula generator.
+"""
+function D¹φ(x::Real, c::Clayton)
     α = 1 / c.ϑ
     return -α * (1 + x)^(-(1 + α))
 end
 
-function φ²(x::Real, c::Clayton)
+"""
+    D²φ(x::Real, c::Clayton)
+
+Second derivative of the Clayton copula generator.
+"""
+function D²φ(x::Real, c::Clayton)
     α = 1 / c.ϑ
     β = α * (1 + α)
     return β * (x + 1)^(-(2 + α))
 end
 
-function ∇φ⁻¹(x::Real, c::Clayton)
+"""
+    φ⁻¹(x::Real, c::Clayton)
+
+Inverse generator of the Clayton copula.
+"""
+function φ⁻¹(x::Real, c::Clayton)
+    return x^(-c.ϑ) - 1
+end
+
+"""
+    D¹φ⁻¹(x::Real, c::Clayton)
+
+First derivative of the Clayton copula inverse generator.
+"""
+function D¹φ⁻¹(x::Real, c::Clayton)
     return -c.ϑ * x^(-c.ϑ - 1)
 end
 

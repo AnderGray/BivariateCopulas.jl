@@ -4,7 +4,7 @@ function rosenblatt(M::AbstractMatrix, c::ArchimedeanCopula)
     u1 = M[:, 1]
     u2 = M[:, 2]
 
-    return [u1 (φ¹.(φ⁻¹.(u1, c) + φ⁻¹.(u2, c), c) ./ φ¹.(φ⁻¹.(u1, c), c))]
+    return [u1 (D¹φ.(φ⁻¹.(u1, c) + φ⁻¹.(u2, c), c) ./ D¹φ.(φ⁻¹.(u1, c), c))]
 end
 
 function inverse_rosenblatt(U::AbstractMatrix, c::ArchimedeanCopula)
@@ -20,7 +20,7 @@ function cdf(c::ArchimedeanCopula, u1::Real, u2::Real)
 end
 
 function density(c::ArchimedeanCopula, u1::Real, u2::Real)
-    return φ²(φ⁻¹(u1, c) + φ⁻¹(u2, c), c) * ∇φ⁻¹(u1, c) * ∇φ⁻¹(u2, c)
+    return D²φ(φ⁻¹(u1, c) + φ⁻¹(u2, c), c) * D¹φ⁻¹(u1, c) * D¹φ⁻¹(u2, c)
 end
 
 function sample(c::ArchimedeanCopula, n::Int64)
