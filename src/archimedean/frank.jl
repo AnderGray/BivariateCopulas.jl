@@ -3,11 +3,14 @@ struct Frank <: ArchimedeanCopula
 
     function Frank(ϑ::Real)
         # bivariate frank is defined on ϑ ∈ (0, ∞)
-        @assert 0 <= ϑ < Inf
+        @assert 0 <= ϑ <= Inf
 
         if ϑ == 0.0
             @warn "Frank returns an independence copula for ϑ == 0.0"
             return Independence()
+        elseif ϑ == Inf
+            @warn "Frank returns an M copula for ϑ == Inf"
+            return M()
         end
 
         return new(ϑ)

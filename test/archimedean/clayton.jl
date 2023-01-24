@@ -16,10 +16,11 @@ v = u
     end
 
     @testset "generators" begin
-        u = [0:0.1:1;]
         for ϑ in θ
             c = Clayton(ϑ)
             @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
+            @test BivariateCopulas.φ(0.0, c) ≈ 1.0
+            @test BivariateCopulas.φ(floatmax(), c) ≈ 0.0 atol = 1e-20
         end
     end
 
@@ -79,7 +80,7 @@ v = u
               [2.2965556205046926, 1.481003649342278, 1.614508582188617, 3.0]
     end
 
-    @testset "grounded" begin
+    @testset "groundedness" begin
         for ϑ in θ
             c = Clayton(ϑ)
             @test iszero(cdf.(c, u, 0.0))

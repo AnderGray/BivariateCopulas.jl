@@ -6,18 +6,21 @@ v = u
 
 @testset "Frank" begin
     @testset "constructor" begin
-        @test_throws AssertionError Frank(Inf)
         @test isa(Frank(0), Independence)
+        @test_throws AssertionError Frank(-2.0)
 
         @test_logs (:warn, "Frank returns an independence copula for ϑ == 0.0") Frank(
             0.0
         )
+        @test_logs (:warn, "Frank returns an M copula for ϑ == Inf") Frank(Inf)
     end
 
     @testset "generators" begin
         u = [0:0.1:1;]
         c = Frank(10.0)
         @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
+        @test BivariateCopulas.φ(0.0, c) ≈ 1.0
+        @test BivariateCopulas.φ(floatmax(), c) ≈ 0.0 atol = 1e-20
     end
 
     @testset "τ" begin
@@ -76,7 +79,7 @@ v = u
               [1.127276244650801, 1.0207470412683992, 1.1272762446508016, 1.5819767068693265]
     end
 
-    @testset "grounded" begin
+    @testset "groundedness" begin
         for ϑ in θ
             c = Frank(ϑ)
             @test iszero(cdf.(c, u, 0.0))

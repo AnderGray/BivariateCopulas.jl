@@ -565,11 +565,6 @@ W(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution) = 
 function Pi(M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution)
     return Pi()(M1, M2)
 end
-function Frank(
-    M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, s=1
-)
-    return Frank(s)(M1, M2)
-end
 function Gaussian(
     M1::ContinuousUnivariateDistribution, M2::ContinuousUnivariateDistribution, corr=0
 )

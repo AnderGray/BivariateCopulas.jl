@@ -2,7 +2,7 @@ struct Clayton <: ArchimedeanCopula
     ϑ::Real
 
     function Clayton(ϑ::Real)
-        # bivariate clayton can go as low as -1
+        # bivariate clayton is defined on ϑ ∈ (0, ∞)
         @assert 0 <= ϑ <= Inf
 
         if ϑ == 0.0
