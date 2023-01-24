@@ -1,4 +1,5 @@
 n = 10^5
+θ = [1.0, 10.0, 20.0]
 
 @testset "Frank" begin
     @testset "constructor" begin
@@ -70,5 +71,38 @@ n = 10^5
         @test isnan(BivariateCopulas.density.(Frank(1.0), x[1], y[1]))
         @test BivariateCopulas.density.(Frank(1.0), x[2:end], y[2:end]) ≈
               [1.127276244650801, 1.0207470412683992, 1.1272762446508016, 1.5819767068693265]
+    end
+
+    @testset "grounded" begin
+        u = collect(range(0.0, 1.0, 10))
+        v = u
+        for ϑ in θ
+            c = Frank(ϑ)
+            @test iszero(cdf.(c, u, 0.0))
+            @test iszero(cdf.(c, 0.0, v))
+        end
+    end
+
+    @testset "uniform margins" begin
+        u = collect(range(0.0, 1.0, 10))
+        v = u
+        for ϑ in θ
+            c = Frank(ϑ)
+            @test cdf.(c, u, 1.0) ≈ u
+            @test cdf.(c, 1.0, v) ≈ v
+        end
+    end
+
+    @testset "2-increasing" begin
+        u = collect(range(0.0, 1.0, 10))
+        v = u
+        for ϑ in θ
+            c = Frank(ϑ)
+            for i in 1:10
+                for j in i:10
+                    @test cdf(c, u[j], v[j]) - cdf(c, u[j], v[i]) - cdf(c, u[i], v[j]) + cdf(c, u[i], v[i]) >= 0.0
+                end
+            end
+        end
     end
 end

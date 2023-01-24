@@ -195,7 +195,7 @@ function calcCdf(density::Array{<:Real,2})
     for i in 2:n
         for j in 2:n
             cdf[i, j] = (
-                density[i, j] / (n^2) + cdf[i, j - 1] + cdf[i - 1, j] - cdf[i - 1, j - 1]
+                density[i, j] / (n^2) + cdf[i, j-1] + cdf[i-1, j] - cdf[i-1, j-1]
             )
         end
     end
@@ -226,10 +226,10 @@ function calcDensity(
     yStep = Float64(yRange.step)
 
     density = zeros(size(cdf))
-    for i in 1:(n - 1)
-        for j in 1:(n - 1)
+    for i in 1:(n-1)
+        for j in 1:(n-1)
             density[i, j] =
-                (cdf[i, j] + cdf[i + 1, j + 1] - cdf[i + 1, j] - cdf[i, j + 1]) /
+                (cdf[i, j] + cdf[i+1, j+1] - cdf[i+1, j] - cdf[i, j+1]) /
                 (xStep * yStep)
 
             #   -> Possible alternative:
@@ -247,8 +247,8 @@ function calcDensity(
     #density[:,end] = reverse(density[1,:]);
 
     #   -> If joint, it may not be symetric
-    density[end, :] = density[end - 1, :]
-    density[:, end] = density[:, end - 1]
+    density[end, :] = density[end-1, :]
+    density[:, end] = density[:, end-1]
     return density
 end
 
@@ -709,7 +709,7 @@ end
 function linInterp(A, x)
     ind0 = findlast(A .<= x)
     x0 = A[ind0]
-    x1 = A[ind0 + 1]
+    x1 = A[ind0+1]
     y0 = ind0 / n
     y1 = (ind0 + 1) / n
 
