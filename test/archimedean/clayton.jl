@@ -1,6 +1,9 @@
 n = 10^5
 θ = [1, 2, 10]
 
+u = collect(range(0.0, 1.0, length=10))
+v = u
+
 @testset "Clayton" begin
     @testset "constructor" begin
         @test isa(Clayton(0), Independence)
@@ -77,8 +80,6 @@ n = 10^5
     end
 
     @testset "grounded" begin
-        u = collect(range(0.0, 1.0, 10))
-        v = u
         for ϑ in θ
             c = Clayton(ϑ)
             @test iszero(cdf.(c, u, 0.0))
@@ -87,8 +88,6 @@ n = 10^5
     end
 
     @testset "uniform margins" begin
-        u = collect(range(0.0, 1.0, 10))
-        v = u
         for ϑ in θ
             c = Clayton(ϑ)
             @test cdf.(c, u, 1.0) ≈ u
@@ -97,8 +96,6 @@ n = 10^5
     end
 
     @testset "2-increasing" begin
-        u = collect(range(0.0, 1.0, 10))
-        v = u
         for ϑ in θ
             c = Clayton(ϑ)
             for i in 1:10
