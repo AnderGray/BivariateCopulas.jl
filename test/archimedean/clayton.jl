@@ -1,5 +1,5 @@
 n = 10^5
-θ = [-0.5, 2, 10]
+θ = [1, 2, 10]
 
 @testset "Clayton" begin
     @testset "constructor" begin
@@ -21,7 +21,7 @@ n = 10^5
     end
 
     @testset "τ" begin
-        @test τ(Clayton(θ[1])) == -1 / 3
+        @test τ(Clayton(θ[1])) == 1 / 3
         @test τ(Clayton(θ[2])) == 0.5
         @test τ(Clayton(θ[3])) == 10 / 12
     end
@@ -65,8 +65,6 @@ n = 10^5
 
         @test cdf.(Clayton(2), x, y) ≈
               [0.0, 0.1796053020267749, 0.37796447300922725, 0.6255432421712244, 1.0]
-        @test cdf.(Clayton(-0.5), x, y) ≈
-              [1.0, 0.0, 0.17157287525381, 0.5358983848622453, 1.0]
     end
 
     @testset "density" begin
@@ -76,7 +74,38 @@ n = 10^5
         @test isnan(BivariateCopulas.density(Clayton(2), x[1], y[1]))
         @test BivariateCopulas.density.(Clayton(2), x[2:end], y[2:end]) ≈
               [2.2965556205046926, 1.481003649342278, 1.614508582188617, 3.0]
+    end
 
-        @test BivariateCopulas.density.(Clayton(-0.5), x, y) ≈ [Inf, 2.0, 1.0, 2 / 3, 0.5]
+    @testset "grounded" begin
+        u = collect(range(0.0, 1.0, 10))
+        v = u
+        for ϑ in θ
+            c = Clayton(ϑ)
+            @test iszero(cdf.(c, u, 0.0))
+            @test iszero(cdf.(c, 0.0, v))
+        end
+    end
+
+    @testset "uniform margins" begin
+        u = collect(range(0.0, 1.0, 10))
+        v = u
+        for ϑ in θ
+            c = Clayton(ϑ)
+            @test cdf.(c, u, 1.0) ≈ u
+            @test cdf.(c, 1.0, v) ≈ v
+        end
+    end
+
+    @testset "2-increasing" begin
+        u = collect(range(0.0, 1.0, 10))
+        v = u
+        for ϑ in θ
+            c = Clayton(ϑ)
+            for i in 1:10
+                for j in i:10
+                    @test cdf(c, u[j], v[j]) - cdf(c, u[j], v[i]) - cdf(c, u[i], v[j]) + cdf(c, u[i], v[i]) >= 0.0
+                end
+            end
+        end
     end
 end

@@ -3,7 +3,7 @@ struct Clayton <: ArchimedeanCopula
 
     function Clayton(ϑ::Real)
         # bivariate clayton can go as low as -1
-        @assert -1 <= ϑ <= Inf
+        @assert 0 <= ϑ <= Inf
 
         if ϑ == 0.0
             @warn "Clayton returns an independence copula for ϑ == 0.0"
@@ -33,7 +33,7 @@ First derivative of the Clayton copula generator.
 """
 function D¹φ(x::Real, c::Clayton)
     α = 1 / c.ϑ
-    return -α * (1 + x)^(-(1 + α))
+    return -α * (1 + x)^(-1 - α)
 end
 
 """
@@ -43,8 +43,7 @@ Second derivative of the Clayton copula generator.
 """
 function D²φ(x::Real, c::Clayton)
     α = 1 / c.ϑ
-    β = α * (1 + α)
-    return β * (x + 1)^(-(2 + α))
+    return (α + α^2) * (1 + x)^(-2 - α)
 end
 
 """
