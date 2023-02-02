@@ -1,9 +1,6 @@
 n = 10^5
 θ = [1, 2, 10]
 
-u = collect(range(0.0, 1.0, length=10))
-v = u
-
 @testset "Clayton" begin
     @testset "constructor" begin
         @test isa(Clayton(0), Independence)
@@ -16,6 +13,7 @@ v = u
     end
 
     @testset "generators" begin
+        u = range(0, 1, length=11)
         for ϑ in θ
             c = Clayton(ϑ)
             @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
@@ -81,6 +79,8 @@ v = u
     end
 
     @testset "groundedness" begin
+        u = range(0.0, 1.0, length=11)
+        v = u
         for ϑ in θ
             c = Clayton(ϑ)
             @test iszero(cdf.(c, u, 0.0))
@@ -89,6 +89,8 @@ v = u
     end
 
     @testset "uniform margins" begin
+        u = range(0.0, 1.0, length=11)
+        v = u
         for ϑ in θ
             c = Clayton(ϑ)
             @test cdf.(c, u, 1.0) ≈ u
@@ -97,10 +99,12 @@ v = u
     end
 
     @testset "2-increasing" begin
+        u = range(0.0, 1.0, length=101)
+        v = u
         for ϑ in θ
             c = Clayton(ϑ)
-            for i in 1:10
-                for j in i:10
+            for i in 1:100
+                for j in i:100
                     @test cdf(c, u[j], v[j]) - cdf(c, u[j], v[i]) - cdf(c, u[i], v[j]) + cdf(c, u[i], v[i]) >= 0.0
                 end
             end

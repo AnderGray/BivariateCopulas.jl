@@ -1,9 +1,6 @@
 n = 10^5
 θ = [1.0, 10.0, 20.0]
 
-u = collect(range(0.0, 1.0, length=10))
-v = u
-
 @testset "Frank" begin
     @testset "constructor" begin
         @test isa(Frank(0), Independence)
@@ -16,7 +13,7 @@ v = u
     end
 
     @testset "generators" begin
-        u = [0:0.1:1;]
+        u = range(0, 1, length=10)
         c = Frank(10.0)
         @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
         @test BivariateCopulas.φ(0.0, c) ≈ 1.0
@@ -80,6 +77,8 @@ v = u
     end
 
     @testset "groundedness" begin
+        u = range(0.0, 1.0, length=11)
+        v = u
         for ϑ in θ
             c = Frank(ϑ)
             @test iszero(cdf.(c, u, 0.0))
@@ -88,6 +87,8 @@ v = u
     end
 
     @testset "uniform margins" begin
+        u = range(0.0, 1.0, length=11)
+        v = u
         for ϑ in θ
             c = Frank(ϑ)
             @test cdf.(c, u, 1.0) ≈ u
@@ -96,10 +97,12 @@ v = u
     end
 
     @testset "2-increasing" begin
+        u = range(0.0, 1.0, length=101)
+        v = u
         for ϑ in θ
             c = Frank(ϑ)
-            for i in 1:10
-                for j in i:10
+            for i in 1:100
+                for j in i:100
                     @test cdf(c, u[j], v[j]) - cdf(c, u[j], v[i]) - cdf(c, u[i], v[j]) + cdf(c, u[i], v[i]) >= 0.0
                 end
             end
