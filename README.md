@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/348161390.svg)](https://zenodo.org/badge/latestdoi/348161390)
+
 # 2-copulas julia
 
 An implementation of bivariate copulas and bivariate distributions in Julia.
