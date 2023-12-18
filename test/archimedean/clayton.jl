@@ -1,5 +1,5 @@
 n = 10^5
-θ = [1, 2, 10]
+θ = [-0.75, 1, 2]
 
 @testset "Clayton" begin
     @testset "constructor" begin
@@ -10,22 +10,44 @@ n = 10^5
             0.0
         )
         @test_logs (:warn, "Clayton returns an M copula for ϑ == Inf") Clayton(Inf)
+        @test_logs (:warn, "Clayton returns a W copula for ϑ == -1") Clayton(-1)
     end
 
-    @testset "generators" begin
-        u = range(0, 1, length=11)
+    @testset "Generator" begin
+        u = range(0, 10, length=10)
         for ϑ in θ
             c = Clayton(ϑ)
             @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
             @test BivariateCopulas.φ(0.0, c) ≈ 1.0
-            @test BivariateCopulas.φ(floatmax(), c) ≈ 0.0 atol = 1e-20
+            if ϑ > 0
+                @test BivariateCopulas.φ(floatmax(), c) ≈ 0.0 atol = 1e-20
+            else # not strict for ϑ < 0
+                @test BivariateCopulas.φ(floatmax(), c) == Inf
+            end
+            if ϑ > 0
+                @test issorted(BivariateCopulas.φ.(u, c); rev=true)
+            else
+                @test issorted(BivariateCopulas.φ.(u, c))
+            end
+        end
+    end
+
+    @testset "Inverse Generator" begin
+        for ϑ in θ
+            c = Clayton(ϑ)
+            if ϑ > 0
+                @test BivariateCopulas.φ⁻¹(0.0, c) == Inf
+            else # not strict for ϑ < 0
+                @test BivariateCopulas.φ⁻¹(0.0, c) == -1.0
+            end
+            @test BivariateCopulas.φ⁻¹(1.0, c) == 0.0
         end
     end
 
     @testset "τ" begin
-        @test τ(Clayton(θ[1])) == 1 / 3
-        @test τ(Clayton(θ[2])) == 0.5
-        @test τ(Clayton(θ[3])) == 10 / 12
+        @test τ(Clayton(θ[1])) == -0.6
+        @test τ(Clayton(θ[2])) == 1 / 3
+        @test τ(Clayton(θ[3])) == 0.5
     end
 
     @testset "sample" begin

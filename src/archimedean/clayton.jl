@@ -3,9 +3,12 @@ struct Clayton <: ArchimedeanCopula
 
     function Clayton(ϑ::Real)
         # bivariate clayton is defined on ϑ ∈ (0, ∞)
-        @assert 0 <= ϑ <= Inf
+        @assert -1 <= ϑ <= Inf
 
-        if ϑ == 0.0
+        if ϑ == -1
+            @warn "Clayton returns a W copula for ϑ == -1"
+            return W()
+        elseif ϑ == 0.0
             @warn "Clayton returns an independence copula for ϑ == 0.0"
             return Independence()
         elseif ϑ == Inf
@@ -24,6 +27,15 @@ Generator of the Clayton copula.
 """
 function φ(x::Real, c::Clayton)
     return (1 + x)^(-1 / c.ϑ)
+end
+
+"""
+    φ⁻¹(x::Real, c::Clayton)
+
+Inverse generator of the Clayton copula.
+"""
+function φ⁻¹(x::Real, c::Clayton)
+    return x^(-c.ϑ) - 1
 end
 
 """
@@ -47,21 +59,19 @@ function D²φ(x::Real, c::Clayton)
 end
 
 """
-    φ⁻¹(x::Real, c::Clayton)
-
-Inverse generator of the Clayton copula.
-"""
-function φ⁻¹(x::Real, c::Clayton)
-    return x^(-c.ϑ) - 1
-end
-
-"""
     D¹φ⁻¹(x::Real, c::Clayton)
 
 First derivative of the Clayton copula inverse generator.
 """
 function D¹φ⁻¹(x::Real, c::Clayton)
     return -c.ϑ * x^(-c.ϑ - 1)
+end
+
+function cdf(c::Clayton, u1::Real, u2::Real)
+    if c.ϑ < 0 && (u1^(-c.ϑ) + u2^(-c.ϑ) - 1) < 0
+        return 0
+    end
+    return (u1^(-c.ϑ) + u2^(-c.ϑ) - 1)^(-1 / c.ϑ)
 end
 
 function rosenblatt(M::AbstractMatrix, c::Clayton)
