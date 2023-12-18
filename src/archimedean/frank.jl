@@ -27,6 +27,15 @@ function φ(x::Real, c::Frank)
 end
 
 """
+    φ⁻¹(x::Real, c::Frank)
+
+Inverse generator of the Frank copula.
+"""
+function φ⁻¹(x::Real, c::Frank)
+    return -log((exp(-c.ϑ * x) - 1) / (exp(-c.ϑ) - 1))
+end
+
+"""
     D¹φ(x::Real, c::Frank)
 
 First derivative of the Frank copula generator.
@@ -44,15 +53,6 @@ Second derivative of the Frank copula generator.
 function D²φ(x::Real, c::Frank)
     z = (1 - exp(-c.ϑ)) * exp(-x)
     return (1 / c.ϑ) * z / (1 - z)^2
-end
-
-"""
-    φ⁻¹(x::Real, c::Frank)
-
-Inverse generator of the Frank copula.
-"""
-function φ⁻¹(x::Real, c::Frank)
-    return -log((exp(-c.ϑ * x) - 1) / (exp(-c.ϑ) - 1))
 end
 
 """

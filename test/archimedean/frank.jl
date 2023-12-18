@@ -12,12 +12,23 @@ n = 10^5
         @test_logs (:warn, "Frank returns an M copula for ϑ == Inf") Frank(Inf)
     end
 
-    @testset "generators" begin
-        u = range(0, 1, length=10)
-        c = Frank(10.0)
-        @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
-        @test BivariateCopulas.φ(0.0, c) ≈ 1.0
-        @test BivariateCopulas.φ(floatmax(), c) ≈ 0.0 atol = 1e-20
+    @testset "Generator" begin
+        u = range(0, 10, length=10)
+        for ϑ in θ
+            c = Frank(ϑ)
+            @test BivariateCopulas.φ⁻¹.(BivariateCopulas.φ.(u, c), c) ≈ u
+            @test BivariateCopulas.φ(0.0, c) ≈ 1.0
+            @test BivariateCopulas.φ(floatmax(), c) ≈ 0.0 atol = 1e-20
+            @test issorted(BivariateCopulas.φ.(u, c); rev=true)
+        end
+    end
+
+    @testset "Inverse Generator" begin
+        for ϑ in θ
+            c = Frank(ϑ)
+            @test BivariateCopulas.φ⁻¹(0.0, c) == Inf
+            @test BivariateCopulas.φ⁻¹(1.0, c) == 0.0
+        end
     end
 
     @testset "τ" begin
