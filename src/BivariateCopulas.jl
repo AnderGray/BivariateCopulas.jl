@@ -17,6 +17,8 @@ using Requires
 @reexport using Distributions             #   https://github.com/JuliaStats/Distributions.jl
 using LinearAlgebra                       #   Main Library
 using Interpolations                      #   https://github.com/JuliaMath/Interpolations.jl
+using GSL # for debye function
+using Roots
 
 import Distributions: cdf, quantile, rand
 
