@@ -1,5 +1,4 @@
 # 2-copulas julia
-============================
 
 ![Build Status](https://github.com/friesischscott/BivariateCopulas.jl/workflows/CI/badge.svg)
 [![DOI](https://zenodo.org/badge/348161390.svg)](https://zenodo.org/badge/latestdoi/348161390)
