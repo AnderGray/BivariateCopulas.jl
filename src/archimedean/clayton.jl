@@ -26,6 +26,9 @@ end
 Generator of the Clayton copula.
 """
 function φ(x::Real, c::Clayton)
+    if x > floatmax()
+        return 0.0
+    end
     return (1 + x)^(-1 / c.ϑ)
 end
 
@@ -69,9 +72,18 @@ end
 
 function cdf(c::Clayton, u1::Real, u2::Real)
     if c.ϑ < 0 && (u1^(-c.ϑ) + u2^(-c.ϑ) - 1) < 0
-        return 0
+        return zero(u1)
     end
     return (u1^(-c.ϑ) + u2^(-c.ϑ) - 1)^(-1 / c.ϑ)
+end
+
+function density(c::Clayton, u1::Real, u2::Real)
+    if iszero(u1) || iszero(u2) || (c.ϑ < 0 && (u1^(-c.ϑ) + u2^(-c.ϑ) - 1) < 0)
+        return zero(u1)
+    end
+    α = 1 / c.ϑ
+    t = φ⁻¹(u1, c) + φ⁻¹(u2, c)
+    return (c.ϑ + 1) * (u1 * u2)^(-(1 + c.ϑ)) * (1 + t)^(-(2 + α))
 end
 
 function rosenblatt(M::AbstractMatrix, c::Clayton)

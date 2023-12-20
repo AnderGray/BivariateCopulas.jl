@@ -20,6 +20,9 @@ function cdf(c::ArchimedeanCopula, u1::Real, u2::Real)
 end
 
 function density(c::ArchimedeanCopula, u1::Real, u2::Real)
+    if iszero(u1) || iszero(u2)
+        return zero(u1)
+    end
     return D²φ(φ⁻¹(u1, c) + φ⁻¹(u2, c), c) * D¹φ⁻¹(u1, c) * D¹φ⁻¹(u2, c)
 end
 

@@ -1,3 +1,5 @@
 [deps]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+HCubature = "19dc6840-f33b-545b-b366-655c7e3ffd49"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
